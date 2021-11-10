@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { listReservations } from "../utils/api";
+import { listTables } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 
 /**
@@ -9,19 +9,23 @@ import ErrorAlert from "../layout/ErrorAlert";
  * @returns {JSX.Element}
  */
 function Seat({ date }) {
-  const [reservations, setReservations] = useState([]);
-  const [reservationsError, setReservationsError] = useState(null);
+  const [tables, setTables] = useState([]);
+  const [tablesError, setTablesError] = useState(null);
 
-  useEffect(loadDashboard, [date]);
+  useEffect(loadTables, [date]);
 
-  function loadDashboard() {
+  function loadTables() {
     const abortController = new AbortController();
-    setReservationsError(null);
-    listReservations({ date }, abortController.signal)
-      .then(setReservations)
-      .catch(setReservationsError);
+    setTablesError(null);
+    listTables(abortController.signal).then(setTables).catch(setTablesError);
     return () => abortController.abort();
   }
+
+  const tableLinks = tables.map((table) => (
+    <option value={table.table_id}>
+      {table.table_name} - capacity {table.capacity}
+    </option>
+  ));
 
   return (
     <main>
@@ -29,8 +33,15 @@ function Seat({ date }) {
       <div className="d-md-flex mb-3">
         <h4 className="mb-0">Reservations for date</h4>
       </div>
-      <ErrorAlert error={reservationsError} />
-      {JSON.stringify(reservations)}
+      <ErrorAlert error={tablesError} />
+      {JSON.stringify(tables)}
+
+      <div class="form-group">
+        <label for="exampleFormControlSelect1">Choose Table</label>
+        <select class="form-control" id="exampleFormControlSelect1">
+          {tableLinks}
+        </select>
+      </div>
     </main>
   );
 }

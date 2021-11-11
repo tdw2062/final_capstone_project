@@ -3,6 +3,9 @@ import React from "react";
 import { Redirect, Route, Switch, useLocation } from "react-router-dom";
 import Dashboard from "../dashboard/Dashboard";
 import Reservations from "../reservations/Reservations";
+import EditReservation from "../reservations/EditReservation";
+import NewReservation from "../reservations/NewReservation";
+import AddTable from "../reservations/AddTable";
 import Seat from "../reservations/Seat";
 import NotFound from "./NotFound";
 import { today } from "../utils/date-time";
@@ -29,11 +32,20 @@ function Routes() {
       <Route exact={true} path="/reservations/:reservationId/seat">
         <Seat date={date} />
       </Route>
+      <Route exact={true} path="/reservations/edit">
+        <EditReservation date={date} />
+      </Route>
+      <Route exact={true} path="/reservations/new">
+        <NewReservation date={date} />
+      </Route>
       <Route exact={true} path="/reservations">
         <Reservations date={date} />
       </Route>
       <Route path="/dashboard">
         <Dashboard date={date} />
+      </Route>
+      <Route path="/tables/new">
+        <AddTable date={date} />
       </Route>
       <Route>
         <NotFound />

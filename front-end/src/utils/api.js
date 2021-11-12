@@ -89,3 +89,26 @@ export async function createReservation(reservation, signal) {
   console.log("url to use", url, "options", options);
   return await fetchJson(url, options, {});
 }
+
+export async function createTable(table, signal) {
+  const url = `${API_BASE_URL}/tables/new`;
+  const options = {
+    method: "POST",
+    headers,
+    body: JSON.stringify(table),
+    signal,
+  };
+  console.log("url to use", url, "options", options);
+  return await fetchJson(url, options, {});
+}
+
+export async function updateReservation(updatedReservation, signal) {
+  const url = `${API_BASE_URL}/reservations/1/edit`;
+  const options = {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(stripCards(updatedDeck)),
+    signal,
+  };
+  return await fetchJson(url, options, updatedDeck);
+}

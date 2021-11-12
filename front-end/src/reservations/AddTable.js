@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { listReservations } from "../utils/api";
+import { createTable } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 
 /**
@@ -9,24 +9,40 @@ import ErrorAlert from "../layout/ErrorAlert";
  * @returns {JSX.Element}
  */
 function AddTable({ date }) {
-  const [reservations, setReservations] = useState([]);
-  const [reservationsError, setReservationsError] = useState(null);
+  //Create name and description state variables and add event listeners
+  const [tableName, setTableName] = useState("");
+  const handleTableNameChange = (event) => setTableName(event.target.value);
 
-  useEffect(loadDashboard, [date]);
+  const [capacity, setCapacity] = useState("");
+  const handleCapacityChange = (event) => setCapacity(event.target.value);
 
-  function loadDashboard() {
-    const abortController = new AbortController();
-    setReservationsError(null);
-    listReservations({ date }, abortController.signal)
-      .then(setReservations)
-      .catch(setReservationsError);
-    return () => abortController.abort();
-  }
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    let table = {
+      data: {},
+    };
+
+    table.data.table_name = tableName;
+    table.data.capacity = capacity;
+
+    console.log("submit table", table);
+
+    async function newTable(table) {
+      const response = await createTable(table);
+    }
+    newTable(table);
+  };
+
+  //Create the handleCancel function to cancel and return to the homepage1
+  const handleCancel = (event) => {
+    console.log("we here");
+    event.preventDefault();
+  };
 
   return (
     <main>
       <h1>Add a Table</h1>
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="table_name">Table Name</label>
           <input
@@ -34,6 +50,8 @@ function AddTable({ date }) {
             name="table_name"
             className="form-control"
             id="table_name"
+            onChange={handleTableNameChange}
+            value={tableName}
           />
         </div>
         <div className="form-group">
@@ -43,12 +61,18 @@ function AddTable({ date }) {
             name="capacity"
             className="form-control"
             id="capacity"
+            onChange={handleCapacityChange}
+            value={capacity}
           />
         </div>
         <button type="submit" className="btn btn-primary">
           Submit
         </button>
-        <button type="cancel" className="btn btn-primary">
+        <button
+          type="cancel"
+          className="btn btn-primary"
+          onClick={handleCancel}
+        >
           Cancel
         </button>
       </form>

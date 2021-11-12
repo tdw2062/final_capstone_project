@@ -32,8 +32,10 @@ headers.append("Content-Type", "application/json");
 async function fetchJson(url, options, onCancel) {
   try {
     const response = await fetch(url, options);
+    console.log("response body", response.body);
 
     if (response.status === 204) {
+      console.log("status returned is 204");
       return null;
     }
 
@@ -42,6 +44,7 @@ async function fetchJson(url, options, onCancel) {
     if (payload.error) {
       return Promise.reject({ message: payload.error });
     }
+    console.log("payload", payload);
     return payload.data;
   } catch (error) {
     if (error.name !== "AbortError") {
@@ -83,5 +86,6 @@ export async function createReservation(reservation, signal) {
     body: JSON.stringify(reservation),
     signal,
   };
+  console.log("url to use", url, "options", options);
   return await fetchJson(url, options, {});
 }

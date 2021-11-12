@@ -36,15 +36,17 @@ function NewReservation({ date }) {
   //makes an api call to add that reservation to the database
   const handleSubmit = (event) => {
     event.preventDefault();
-    let reservation = {};
+    let reservation = {
+      data: {},
+    };
 
-    reservation.first_name = firstName;
-    reservation.last_name = lastName;
-    reservation.mobile_number = mobileNumber;
-    reservation.reservation_date = reservationDate;
-    reservation.reservation_time = reservationTime;
-    reservation.people = people;
-    console.log(reservation);
+    reservation.data.first_name = firstName;
+    reservation.data.last_name = lastName;
+    reservation.data.mobile_number = mobileNumber;
+    reservation.data.reservation_date = reservationDate;
+    reservation.data.reservation_time = reservationTime;
+    reservation.data.people = people;
+    console.log("submit reservation", reservation);
 
     async function newReservation(reservation) {
       const response = await createReservation(reservation);

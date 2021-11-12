@@ -16,7 +16,9 @@ async function list(req, res, next) {
 }
 
 async function create(req, res, next) {
+  console.log("request data", req.body);
   const data = await reservationsService.create(req.body.data);
+  console.log("back-end data", data);
   res.status(201).json({ data });
 }
 

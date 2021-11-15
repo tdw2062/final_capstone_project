@@ -15,6 +15,22 @@ async function list(req, res, next) {
   res.json({ data });
 }
 
+//Helper function that determines if a given reservation exits (by reservationId)
+async function reservationExists(req, res, next) {
+  const reservation = await reservationsService.read(req.params.reservationId);
+
+  if (reservation) {
+    res.locals.reservation = reservation;
+    return next();
+  }
+  next({ status: 404, message: `Reservation cannot be found.` });
+}
+
+//List a specific reservation
+async function read(req, res, next) {
+  res.json({ data: res.locals.reservation });
+}
+
 async function create(req, res, next) {
   console.log("request data", req.body);
   const data = await reservationsService.create(req.body.data);
@@ -39,5 +55,6 @@ module.exports = {
   listTables,
   create,
   createTable,
+  read: [reservationExists, read],
   update,
 };

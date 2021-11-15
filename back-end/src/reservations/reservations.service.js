@@ -1,12 +1,18 @@
 const knex = require("../db/connection");
 
+//List all reservations
 function list() {
   return knex("reservations").select("*");
 }
 
-//List all movies
+//List all tables
 function listTables() {
   return knex("tables").select("*");
+}
+
+//Get one reservation by reservation_id
+function read(reservation_id) {
+  return knex("reservations").select("*").where({ reservation_id }).first();
 }
 
 function create(reservation) {
@@ -36,5 +42,6 @@ module.exports = {
   listTables,
   create,
   createTable,
+  read,
   update,
 };

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { listReservations } from "../utils/api";
+import { useParams } from "react-router-dom";
+import { listReservations, readReservation } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 
 /**
@@ -9,19 +10,44 @@ import ErrorAlert from "../layout/ErrorAlert";
  * @returns {JSX.Element}
  */
 function EditReservation({ date }) {
-  const [reservations, setReservations] = useState([]);
-  const [reservationsError, setReservationsError] = useState(null);
+  //Create name and description state variables and add event listeners
+  const [firstName, setFirstName] = useState("");
+  const handleFirstNameChange = (event) => setFirstName(event.target.value);
 
-  useEffect(loadDashboard, [date]);
+  const [lastName, setLastName] = useState("");
+  const handleLastNameChange = (event) => setLastName(event.target.value);
 
-  function loadDashboard() {
-    const abortController = new AbortController();
-    setReservationsError(null);
-    listReservations({ date }, abortController.signal)
-      .then(setReservations)
-      .catch(setReservationsError);
-    return () => abortController.abort();
-  }
+  const [mobileNumber, setMobileNumber] = useState("");
+  const handleMobileNumberChange = (event) =>
+    setMobileNumber(event.target.value);
+
+  const [reservationDate, setReservationDate] = useState("");
+  const handleReservationDateChange = (event) =>
+    setReservationDate(event.target.value);
+
+  const [reservationTime, setReservationTime] = useState("");
+  const handleReservationTimeChange = (event) =>
+    setReservationTime(event.target.value);
+
+  const [people, setPeople] = useState("");
+  const handlePeopleChange = (event) => setPeople(event.target.value);
+
+  //Get ReservationId from url
+  const { reservationId } = useParams();
+
+  //Make an API Call to get the reservation based on the deckID
+  useEffect(() => {
+    async function getReservation(reservationId) {
+      const response = await readReservation(reservationId);
+      setFirstName(response.first_name);
+      setLastName(response.last_name);
+      setMobileNumber(response.mobile_number);
+      setReservationDate(response.reservation_date);
+      setReservationTime(response.reservation_time);
+      setPeople(response.people);
+    }
+    getReservation(reservationId);
+  }, [reservationId]);
 
   return (
     <main>
@@ -35,6 +61,8 @@ function EditReservation({ date }) {
             className="form-control"
             id="first_name"
             aria-describedby="emailHelp"
+            onChange={handleFirstNameChange}
+            value={firstName}
           />
         </div>
         <div className="form-group">
@@ -44,6 +72,8 @@ function EditReservation({ date }) {
             name="last_name"
             className="form-control"
             id="last_name"
+            onChange={handleLastNameChange}
+            value={lastName}
           />
         </div>
         <div className="form-group">
@@ -53,6 +83,8 @@ function EditReservation({ date }) {
             name="mobile_number"
             className="form-control"
             id="mobile_number"
+            onChange={handleMobileNumberChange}
+            value={mobileNumber}
           />
         </div>
         <div className="form-group">
@@ -62,6 +94,8 @@ function EditReservation({ date }) {
             name="reservation_date"
             className="form-control"
             id="reservation_date"
+            onChange={handleReservationDateChange}
+            value={reservationDate}
           />
         </div>
         <div className="form-group">
@@ -71,6 +105,8 @@ function EditReservation({ date }) {
             name="reservation_time"
             className="form-control"
             id="reservation_time"
+            onChange={handleReservationTimeChange}
+            value={reservationTime}
           />
         </div>
         <div className="form-group">
@@ -80,6 +116,8 @@ function EditReservation({ date }) {
             name="people"
             className="form-control"
             id="people"
+            onChange={handlePeopleChange}
+            value={people}
           />
         </div>
         <button type="submit" className="btn btn-primary">

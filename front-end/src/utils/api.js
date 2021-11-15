@@ -108,7 +108,7 @@ export async function readReservation(reservationId, signal) {
 }
 
 export async function updateReservation(updatedReservation, signal) {
-  const url = `${API_BASE_URL}/reservations/1/edit`;
+  const url = `${API_BASE_URL}/reservations/${updatedReservation.data.reservation_id}/edit`;
   const options = {
     method: "PUT",
     headers,

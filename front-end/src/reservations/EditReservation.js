@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { listReservations, readReservation } from "../utils/api";
+import {
+  listReservations,
+  readReservation,
+  updateReservation,
+} from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 
 /**
@@ -49,10 +53,48 @@ function EditReservation({ date }) {
     getReservation(reservationId);
   }, [reservationId]);
 
+  //Create the handleSubmit function to update the deck
+  //This function creates a deck based on the user input and then uses updateDeck() api call
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    let reservation = {
+      data: {},
+    };
+
+    reservation.data.reservation_id = reservationId;
+    reservation.data.first_name = firstName;
+    reservation.data.last_name = lastName;
+    reservation.data.mobile_number = mobileNumber;
+    reservation.data.reservation_date = reservationDate;
+    reservation.data.reservation_time = reservationTime;
+    reservation.data.people = people;
+    console.log("submit reservation", reservation);
+
+    async function changeReservation(reservation) {
+      const response = await updateReservation(reservation);
+      console.log(response);
+    }
+    changeReservation(reservation);
+
+    setFirstName("");
+    setLastName("");
+    setMobileNumber("");
+    setReservationDate("");
+    setReservationTime("");
+    setPeople("");
+
+    //document.location.href = "/";
+  };
+
+  //Create the handleCancel function to return the user to the deck page
+  const handleCancel = (event) => {
+    document.location.href = `/reservations`;
+  };
+
   return (
     <main>
       <h1>Edit Reservation</h1>
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="first_name">First Name</label>
           <input
@@ -123,7 +165,11 @@ function EditReservation({ date }) {
         <button type="submit" className="btn btn-primary">
           Submit
         </button>
-        <button type="cancel" className="btn btn-primary">
+        <button
+          type="cancel"
+          className="btn btn-primary"
+          onClick={handleCancel}
+        >
           Cancel
         </button>
       </form>

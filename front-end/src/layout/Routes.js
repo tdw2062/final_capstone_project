@@ -2,6 +2,7 @@ import React from "react";
 
 import { Redirect, Route, Switch, useLocation } from "react-router-dom";
 import Dashboard from "../dashboard/Dashboard";
+import Dashboard2 from "../dashboard/Dashboard2";
 import Reservations from "../reservations/Reservations";
 import EditReservation from "../reservations/EditReservation";
 import NewReservation from "../reservations/NewReservation";
@@ -32,7 +33,7 @@ function Routes() {
       <Route exact={true} path="/reservations/:reservationId/seat">
         <Seat date={date} />
       </Route>
-      <Route exact={true} path="/reservations/edit">
+      <Route exact={true} path="/reservations/:reservationId/edit">
         <EditReservation date={date} />
       </Route>
       <Route exact={true} path="/reservations/new">
@@ -43,6 +44,9 @@ function Routes() {
       </Route>
       <Route path="/dashboard">
         <Dashboard date={date} />
+      </Route>
+      <Route path="/dashboard2">
+        <Dashboard2 date={date} />
       </Route>
       <Route path="/tables/new">
         <AddTable date={date} />

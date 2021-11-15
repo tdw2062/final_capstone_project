@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { listReservations } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 
@@ -27,6 +28,27 @@ function Dashboard2({ date }) {
     <tr>
       <td>{reservation.first_name}</td>
       <td>{reservation.last_name}</td>
+      <td>{reservation.mobile_number}</td>
+      <td>{reservation.reservation_date}</td>
+      <td>{reservation.reservation_time}</td>
+      <td>{reservation.people}</td>
+      <td>
+        <Link to={`/reservations/${reservation.reservation_id}/edit`}>
+          <button type="button" class="btn btn-outline-primary">
+            Edit
+          </button>
+        </Link>{" "}
+      </td>
+      <td>
+        <button type="button" class="btn btn-outline-primary">
+          Cancel
+        </button>
+      </td>
+      <td>
+        <button type="button" class="btn btn-outline-primary">
+          Seat
+        </button>
+      </td>
     </tr>
   ));
 
@@ -37,6 +59,10 @@ function Dashboard2({ date }) {
         <tr>
           <th>First Name</th>
           <th>Last Name</th>
+          <th>Mobile Number</th>
+          <th>Reservation Date</th>
+          <th>Reservation Time</th>
+          <th>People</th>
         </tr>
 
         {reservationLinks}

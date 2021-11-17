@@ -68,6 +68,8 @@ function Dashboard2({ date }) {
     <tr>
       <td>{table.table_name}</td>
       <td>{table.capacity}</td>
+      <td>{table.reservation_id}</td>
+      <td>{table.reservation_id === null ? "Free" : "Occupied"}</td>
       <td>
         <button type="button" class="btn btn-outline-primary">
           Finish
@@ -97,6 +99,8 @@ function Dashboard2({ date }) {
         <tr>
           <th>Table Name</th>
           <th>Capacity</th>
+          <th>Reservation ID</th>
+          <th>Status</th>
         </tr>
         {tableLinks}
       </table>

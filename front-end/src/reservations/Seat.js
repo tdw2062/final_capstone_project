@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { listTables, updateReservation } from "../utils/api";
+import { listTables, updateReservation, updateTable } from "../utils/api";
 import { useParams } from "react-router-dom";
 import ErrorAlert from "../layout/ErrorAlert";
 
@@ -12,6 +12,9 @@ import ErrorAlert from "../layout/ErrorAlert";
 function Seat({ date }) {
   const [tables, setTables] = useState([]);
   const [tablesError, setTablesError] = useState(null);
+
+  const [tableId, setTableId] = useState("");
+  const handleTableIdChange = (event) => setTableId(event.target.value);
 
   useEffect(loadTables, [date]);
 
@@ -48,6 +51,20 @@ function Seat({ date }) {
     }
     changeReservation(reservation);
 
+    let table = {
+      data: {},
+    };
+
+    table.data.table_id = tableId;
+    table.data.reservation_id = reservationId;
+    console.log("table", table);
+
+    async function changeTable(table) {
+      const response = await updateTable(table);
+      console.log(response);
+    }
+    changeTable(table);
+
     //document.location.href = "/";
   };
 
@@ -62,7 +79,14 @@ function Seat({ date }) {
       <br />
       <div class="form-group">
         <label for="exampleFormControlSelect1">Choose Table</label>
-        <select class="form-control" id="exampleFormControlSelect1">
+        <select
+          class="form-control"
+          id="tableSeat"
+          name="tableSeat"
+          onChange={handleTableIdChange}
+          value={tableId}
+        >
+          <option value="">--Select an Option--</option>
           {tableLinks}
         </select>
       </div>

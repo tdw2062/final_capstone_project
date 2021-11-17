@@ -46,7 +46,10 @@ async function createTable(req, res, next) {
 }
 
 async function update(req, res, next) {
-  const response = await reservationsService.update(req.body.data);
+  const response = await reservationsService.update(
+    req.body.data,
+    req.params.reservationId
+  );
   res.json({ data: response });
 }
 

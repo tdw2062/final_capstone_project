@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { listTables } from "../utils/api";
+import { listTables, updateReservation } from "../utils/api";
+import { useParams } from "react-router-dom";
 import ErrorAlert from "../layout/ErrorAlert";
 
 /**
@@ -27,21 +28,56 @@ function Seat({ date }) {
     </option>
   ));
 
+  //Get ReservationId from url
+  const { reservationId } = useParams();
+
+  //Create the handleSubmit function to update the deck
+  //This function creates a deck based on the user input and then uses updateDeck() api call
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    let reservation = {
+      data: {},
+    };
+
+    reservation.data.reservation_id = reservationId;
+    reservation.data.status = "seated";
+
+    async function changeReservation(reservation) {
+      const response = await updateReservation(reservation);
+      console.log(response);
+    }
+    changeReservation(reservation);
+
+    //document.location.href = "/";
+  };
+
+  //Create the handleCancel function to return the user to the deck page
+  const handleCancel = (event) => {
+    document.location.href = `/reservations`;
+  };
+
   return (
     <main>
-      <h1>Dashboard</h1>
-      <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Reservations for date</h4>
-      </div>
-      <ErrorAlert error={tablesError} />
-      {JSON.stringify(tables)}
-
+      <h1>Seat the Party</h1>
+      <br />
       <div class="form-group">
         <label for="exampleFormControlSelect1">Choose Table</label>
         <select class="form-control" id="exampleFormControlSelect1">
           {tableLinks}
         </select>
       </div>
+      <form onSubmit={handleSubmit}>
+        <button type="submit" className="btn btn-primary">
+          Submit
+        </button>
+        <button
+          type="cancel"
+          className="btn btn-primary"
+          onClick={handleCancel}
+        >
+          Cancel
+        </button>
+      </form>
     </main>
   );
 }

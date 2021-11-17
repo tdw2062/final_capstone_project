@@ -29,10 +29,10 @@ function createTable(table) {
     .then((results) => results[0]);
 }
 
-function update(updatedReservation) {
+function update(updatedReservation, reservationId) {
   return knex("reservations")
     .select("*")
-    .where({ reservation_id: updatedReservation.reservation_id })
+    .where({ reservation_id: reservationId })
     .update(updatedReservation, "*")
     .then((updatedRecords) => updatedRecords[0]);
 }

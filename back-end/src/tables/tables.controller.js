@@ -11,6 +11,21 @@ async function createTable(req, res, next) {
   res.status(201).json({ data });
 }
 
+async function list(req, res, next) {
+  const data = await tablesService.list();
+  res.json({ data });
+}
+
+async function update(req, res, next) {
+  const response = await tablesService.update(
+    req.body.data,
+    req.params.tableId
+  );
+  res.json({ data: response });
+}
+
 module.exports = {
   createTable,
+  list,
+  update,
 };

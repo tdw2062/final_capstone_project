@@ -19,6 +19,11 @@ router
   .post(controller.createTable)
   .all(methodNotAllowed);
 
+router
+  .route("/:reservationId/status")
+  .put(controller.update)
+  .all(methodNotAllowed);
+
 router.route("/:reservationId").get(controller.read).all(methodNotAllowed);
 
 router

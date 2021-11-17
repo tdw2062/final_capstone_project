@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { listReservations } from "../utils/api";
+import { listTables } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 
 /**
@@ -12,6 +13,8 @@ import ErrorAlert from "../layout/ErrorAlert";
 function Dashboard2({ date }) {
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
+  const [tables, setTables] = useState([]);
+  const [tablesError, setTablesError] = useState(null);
 
   useEffect(loadDashboard, [date]);
 
@@ -21,6 +24,15 @@ function Dashboard2({ date }) {
     listReservations({ date }, abortController.signal)
       .then(setReservations)
       .catch(setReservationsError);
+    return () => abortController.abort();
+  }
+
+  useEffect(loadTables, [date]);
+
+  function loadTables() {
+    const abortController = new AbortController();
+    setTablesError(null);
+    listTables(abortController.signal).then(setTables).catch(setTablesError);
     return () => abortController.abort();
   }
 
@@ -52,6 +64,18 @@ function Dashboard2({ date }) {
     </tr>
   ));
 
+  const tableLinks = tables.map((table) => (
+    <tr>
+      <td>{table.table_name}</td>
+      <td>{table.capacity}</td>
+      <td>
+        <button type="button" class="btn btn-outline-primary">
+          Finish
+        </button>
+      </td>
+    </tr>
+  ));
+
   return (
     <main>
       <h1>Reservations</h1>
@@ -66,6 +90,15 @@ function Dashboard2({ date }) {
         </tr>
 
         {reservationLinks}
+      </table>
+      <br />
+      <h1>Tables for Seating</h1>
+      <table>
+        <tr>
+          <th>Table Name</th>
+          <th>Capacity</th>
+        </tr>
+        {tableLinks}
       </table>
     </main>
   );

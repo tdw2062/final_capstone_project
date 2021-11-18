@@ -62,10 +62,13 @@ async function fetchJson(url, options, onCancel) {
  */
 
 export async function listReservations(params, signal) {
+  console.log("helloThere", params);
+
   const url = new URL(`${API_BASE_URL}/reservations`);
   Object.entries(params).forEach(([key, value]) =>
     url.searchParams.append(key, value.toString())
   );
+  console.log("urlSearchParams", url);
 
   return await fetchJson(url, { headers, signal }, [])
     .then(formatReservationDate)
@@ -103,6 +106,7 @@ export async function createTable(table, signal) {
 }
 
 export async function readReservation(reservationId, signal) {
+  console.log("hello");
   const url = `${API_BASE_URL}/reservations/${reservationId}`;
   return await fetchJson(url, { signal }, {});
 }

@@ -1,8 +1,8 @@
 const knex = require("../db/connection");
 
 //List all reservations
-function list() {
-  return knex("reservations").select("*");
+function list(params) {
+  return knex("reservations").select("*").where(params);
 }
 
 //List all tables
@@ -43,5 +43,6 @@ module.exports = {
   create,
   createTable,
   read,
+
   update,
 };

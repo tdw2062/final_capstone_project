@@ -7,6 +7,7 @@ import Reservations from "../reservations/Reservations";
 import EditReservation from "../reservations/EditReservation";
 import NewReservation from "../reservations/NewReservation";
 import AddTable from "../reservations/AddTable";
+import Search from "../reservations/Search";
 import Seat from "../reservations/Seat";
 import NotFound from "./NotFound";
 import { today } from "../utils/date-time";
@@ -25,6 +26,9 @@ function Routes() {
     date = today();
     // TODO: set query param to default date
   }
+
+  console.log("currentDate", date);
+
   return (
     <Switch>
       <Route exact={true} path="/">
@@ -41,6 +45,9 @@ function Routes() {
       </Route>
       <Route exact={true} path="/reservations">
         <Reservations date={date} />
+      </Route>
+      <Route exact={true} path="/search">
+        <Search date={date} />
       </Route>
       <Route path="/dashboard">
         <Dashboard date={date} />

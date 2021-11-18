@@ -11,7 +11,9 @@ async function listTables(req, res, next) {
 }
 
 async function list(req, res, next) {
-  const data = await reservationsService.list();
+  console.log("params", req.query);
+  const data = await reservationsService.list(req.query);
+
   res.json({ data });
 }
 
@@ -59,5 +61,6 @@ module.exports = {
   create,
   createTable,
   read: [reservationExists, read],
+
   update,
 };

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { listReservations, updateReservation } from "../utils/api";
 import { listTables } from "../utils/api";
 import SeatButton from "./SeatButton";
+import FinishButton from "./FinishButton";
 import ErrorAlert from "../layout/ErrorAlert";
 
 /**
@@ -43,6 +44,7 @@ function Dashboard2({ date }) {
   //Create the handleSubmit function to update the deck
   //This function creates a deck based on the user input and then uses updateDeck() api call
   function handleFinish(reservationId) {
+    console.log("reservationId", reservationId);
     let reservation = {
       data: {},
     };
@@ -87,23 +89,23 @@ function Dashboard2({ date }) {
     );
   });
 
-  const tableLinks = tables.map((table) => (
-    <tr>
-      <td>{table.table_name}</td>
-      <td>{table.capacity}</td>
-      <td>{table.reservation_id}</td>
-      <td>{table.reservation_id === null ? "Free" : "Occupied"}</td>
-      <td>
-        <button
-          type="button"
-          class="btn btn-outline-primary"
-          onClick={() => handleFinish(table.reservation_id)}
-        >
-          Finish
-        </button>
-      </td>
-    </tr>
-  ));
+  const tableLinks = tables.map((table) => {
+    let visible = table.reservation_id ? true : null;
+
+    return (
+      <tr>
+        <td>{table.table_name}</td>
+        <td>{table.capacity}</td>
+        <td>{table.reservation_id}</td>
+        <td>{table.reservation_id === null ? "Free" : "Occupied"}</td>
+        <FinishButton
+          visibility={visible}
+          handleFinish={handleFinish}
+          reservationId={table.reservation_id}
+        />
+      </tr>
+    );
+  });
 
   return (
     <main>

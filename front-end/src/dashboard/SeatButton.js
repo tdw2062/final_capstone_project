@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { listReservations } from "../utils/api";
-
-function SearchResults({ visibility }) {
+function SeatButton({ visibility }) {
   console.log("value of visibility", visibility);
   if (visibility !== null) {
     return (
@@ -17,4 +15,4 @@ function SearchResults({ visibility }) {
   }
 }
 
-export default SearchResults;
+export default SeatButton;

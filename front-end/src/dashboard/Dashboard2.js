@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { listReservations, updateReservation } from "../utils/api";
 import { listTables } from "../utils/api";
+import SeatButton from "./SeatButton";
 import ErrorAlert from "../layout/ErrorAlert";
 
 /**
@@ -17,6 +18,7 @@ function Dashboard2({ date }) {
   const [reservationsError, setReservationsError] = useState(null);
   const [tables, setTables] = useState([]);
   const [tablesError, setTablesError] = useState(null);
+  const [visibilityStatus, setVisibilityStatus] = useState(null);
 
   useEffect(loadDashboard, [date]);
 
@@ -57,34 +59,34 @@ function Dashboard2({ date }) {
     changeReservation(reservation);
   }
 
-  const reservationLinks = reservations.map((reservation) => (
-    <tr>
-      <td>{reservation.first_name}</td>
-      <td>{reservation.last_name}</td>
-      <td>{reservation.mobile_number}</td>
-      <td>{reservation.reservation_date}</td>
-      <td>{reservation.reservation_time}</td>
-      <td>{reservation.people}</td>
-      <td>{reservation.status}</td>
-      <td>
-        <Link to={`/reservations/${reservation.reservation_id}/edit`}>
+  const reservationLinks = reservations.map((reservation) => {
+    let visible = reservation.status === "booked" ? true : null;
+
+    return (
+      <tr>
+        <td>{reservation.first_name}</td>
+        <td>{reservation.last_name}</td>
+        <td>{reservation.mobile_number}</td>
+        <td>{reservation.reservation_date}</td>
+        <td>{reservation.reservation_time}</td>
+        <td>{reservation.people}</td>
+        <td>{reservation.status}</td>
+        <td>
+          <Link to={`/reservations/${reservation.reservation_id}/edit`}>
+            <button type="button" class="btn btn-outline-primary">
+              Edit
+            </button>
+          </Link>{" "}
+        </td>
+        <td>
           <button type="button" class="btn btn-outline-primary">
-            Edit
+            Cancel
           </button>
-        </Link>{" "}
-      </td>
-      <td>
-        <button type="button" class="btn btn-outline-primary">
-          Cancel
-        </button>
-      </td>
-      <td>
-        <button type="button" class="btn btn-outline-primary">
-          Seat
-        </button>
-      </td>
-    </tr>
-  ));
+        </td>
+        <SeatButton visibility={visible} />
+      </tr>
+    );
+  });
 
   const tableLinks = tables.map((table) => (
     <tr>

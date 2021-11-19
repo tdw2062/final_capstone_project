@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { listReservations } from "../utils/api";
+import { listReservations, updateReservation } from "../utils/api";
 import { listTables } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 
@@ -39,6 +39,24 @@ function Dashboard2({ date }) {
     return () => abortController.abort();
   }
 
+  //Create the handleSubmit function to update the deck
+  //This function creates a deck based on the user input and then uses updateDeck() api call
+  function handleFinish(reservationId) {
+    let reservation = {
+      data: {},
+    };
+
+    reservation.data.reservation_id = reservationId;
+    reservation.data.status = "finished";
+    console.log("reservation", reservation);
+
+    async function changeReservation(reservation) {
+      const response = await updateReservation(reservation);
+      console.log("response", response);
+    }
+    changeReservation(reservation);
+  }
+
   const reservationLinks = reservations.map((reservation) => (
     <tr>
       <td>{reservation.first_name}</td>
@@ -47,6 +65,7 @@ function Dashboard2({ date }) {
       <td>{reservation.reservation_date}</td>
       <td>{reservation.reservation_time}</td>
       <td>{reservation.people}</td>
+      <td>{reservation.status}</td>
       <td>
         <Link to={`/reservations/${reservation.reservation_id}/edit`}>
           <button type="button" class="btn btn-outline-primary">
@@ -74,7 +93,11 @@ function Dashboard2({ date }) {
       <td>{table.reservation_id}</td>
       <td>{table.reservation_id === null ? "Free" : "Occupied"}</td>
       <td>
-        <button type="button" class="btn btn-outline-primary">
+        <button
+          type="button"
+          class="btn btn-outline-primary"
+          onClick={() => handleFinish(table.reservation_id)}
+        >
           Finish
         </button>
       </td>
@@ -92,6 +115,7 @@ function Dashboard2({ date }) {
           <th>Reservation Date</th>
           <th>Reservation Time</th>
           <th>People</th>
+          <th>Status</th>
         </tr>
 
         {reservationLinks}

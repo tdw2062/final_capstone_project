@@ -12,8 +12,10 @@ async function listTables(req, res, next) {
 
 async function list(req, res, next) {
   console.log("params", req.query);
-  const data = await reservationsService.list(req.query);
-
+  const response = await reservationsService.list(req.query);
+  console.log("initial response", response);
+  const data = response.filter((obj) => obj.status !== "finished");
+  console.log("filtered response", data);
   res.json({ data });
 }
 

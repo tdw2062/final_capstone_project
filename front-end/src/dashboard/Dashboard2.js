@@ -18,7 +18,6 @@ function Dashboard2({ date }) {
   const [reservationsError, setReservationsError] = useState(null);
   const [tables, setTables] = useState([]);
   const [tablesError, setTablesError] = useState(null);
-  const [visibilityStatus, setVisibilityStatus] = useState(null);
 
   useEffect(loadDashboard, [date]);
 

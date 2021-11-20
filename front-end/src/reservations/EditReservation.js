@@ -36,6 +36,9 @@ function EditReservation({ date }) {
   const [people, setPeople] = useState("");
   const handlePeopleChange = (event) => setPeople(event.target.value);
 
+  const [status, setStatus] = useState("");
+  const handleStatusChange = (event) => setStatus(event.target.value);
+
   //Get ReservationId from url
   const { reservationId } = useParams();
 
@@ -49,6 +52,7 @@ function EditReservation({ date }) {
       setReservationDate(response.reservation_date);
       setReservationTime(response.reservation_time);
       setPeople(response.people);
+      setStatus(response.status);
     }
     getReservation(reservationId);
   }, [reservationId]);
@@ -68,6 +72,7 @@ function EditReservation({ date }) {
     reservation.data.reservation_date = reservationDate;
     reservation.data.reservation_time = reservationTime;
     reservation.data.people = people;
+    reservation.data.status = status;
     console.log("submit reservation", reservation);
 
     async function changeReservation(reservation) {
@@ -82,13 +87,14 @@ function EditReservation({ date }) {
     setReservationDate("");
     setReservationTime("");
     setPeople("");
+    setStatus("");
 
     //document.location.href = "/";
   };
 
   //Create the handleCancel function to return the user to the deck page
   const handleCancel = (event) => {
-    document.location.href = `/reservations`;
+    document.location.href = `/dashboard2`;
   };
 
   return (
@@ -160,6 +166,17 @@ function EditReservation({ date }) {
             id="people"
             onChange={handlePeopleChange}
             value={people}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="status">Status</label>
+          <input
+            type="text"
+            name="status"
+            className="form-control"
+            id="status"
+            onChange={handleStatusChange}
+            value={status}
           />
         </div>
         <button type="submit" className="btn btn-primary">

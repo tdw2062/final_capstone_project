@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { listReservations, updateReservation } from "../utils/api";
+import { listReservations, updateReservation, updateTable } from "../utils/api";
 import { listTables } from "../utils/api";
 import SeatButton from "./SeatButton";
 import FinishButton from "./FinishButton";
@@ -43,7 +43,7 @@ function Dashboard2({ date }) {
 
   //Create the handleSubmit function to update the deck
   //This function creates a deck based on the user input and then uses updateDeck() api call
-  function handleFinish(reservationId) {
+  function handleFinish(reservationId, tableId) {
     console.log("reservationId", reservationId);
     let reservation = {
       data: {},
@@ -58,6 +58,20 @@ function Dashboard2({ date }) {
       console.log("response", response);
     }
     changeReservation(reservation);
+
+    let table = {
+      data: {},
+    };
+
+    table.data.table_id = tableId;
+    table.data.reservation_id = null;
+    console.log("table", table);
+
+    async function changeTable(table) {
+      const response = await updateTable(table);
+      console.log(response);
+    }
+    changeTable(table);
   }
 
   const reservationLinks = reservations.map((reservation) => {
@@ -84,7 +98,10 @@ function Dashboard2({ date }) {
             Cancel
           </button>
         </td>
-        <SeatButton visibility={visible} />
+        <SeatButton
+          visibility={visible}
+          reservationId={reservation.reservation_id}
+        />
       </tr>
     );
   });
@@ -102,6 +119,7 @@ function Dashboard2({ date }) {
           visibility={visible}
           handleFinish={handleFinish}
           reservationId={table.reservation_id}
+          tableId={table.table_id}
         />
       </tr>
     );

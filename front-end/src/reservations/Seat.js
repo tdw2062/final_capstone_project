@@ -65,7 +65,7 @@ function Seat({ date }) {
     }
     changeTable(table);
 
-    //document.location.href = "/";
+    document.location.href = "/dashboard2";
   };
 
   //Create the handleCancel function to return the user to the deck page

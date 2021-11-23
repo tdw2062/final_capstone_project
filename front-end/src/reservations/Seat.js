@@ -4,6 +4,7 @@ import {
   updateReservation,
   updateTable,
   readReservation,
+  readTable,
 } from "../utils/api";
 import { useParams } from "react-router-dom";
 import ErrorAlert from "../layout/ErrorAlert";
@@ -84,13 +85,21 @@ function Seat({ date }) {
     setVisibility(null);
     setVisibility2(null);
 
-    //Make call to get the reservation and check the capacity of the reservation
+    //Make call to get the reservation and check the number of people in the reservation
     async function getReservation(reservationId) {
       const response = await readReservation(reservationId);
       let people = response.people;
       console.log("people", people);
     }
     getReservation(reservationId);
+
+    //Make call to get the table and check the capacity of the table
+    async function getTable(tableId) {
+      const response = await readTable(tableId);
+      let capacity = response.capacity;
+      console.log("tableCapacity", capacity);
+    }
+    getTable(tableId);
 
     /*
     if (reservationDate < today()) {

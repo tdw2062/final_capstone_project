@@ -16,6 +16,8 @@ router
   .put(controller.update)
   .all(methodNotAllowed);
 
+router.route("/:tableId").get(controller.read).all(methodNotAllowed);
+
 router.route("/").get(controller.list).all(methodNotAllowed);
 
 module.exports = router;

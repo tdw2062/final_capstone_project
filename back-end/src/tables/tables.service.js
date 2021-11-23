@@ -7,6 +7,11 @@ function createTable(table) {
     .then((results) => results[0]);
 }
 
+//Get one table table_id
+function read(table_id) {
+  return knex("tables").select("*").where({ table_id }).first();
+}
+
 //List all reservations
 function list() {
   return knex("tables").select("*");
@@ -23,5 +28,6 @@ function update(updatedTable, tableId) {
 module.exports = {
   createTable,
   list,
+  read,
   update,
 };

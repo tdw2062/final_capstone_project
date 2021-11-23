@@ -111,6 +111,12 @@ export async function readReservation(reservationId, signal) {
   return await fetchJson(url, { signal }, {});
 }
 
+export async function readTable(tableId, signal) {
+  console.log("helloTable");
+  const url = `${API_BASE_URL}/tables/${tableId}`;
+  return await fetchJson(url, { signal }, {});
+}
+
 export async function updateReservation(updatedReservation, signal) {
   const url = `${API_BASE_URL}/reservations/${updatedReservation.data.reservation_id}/edit`;
   const options = {

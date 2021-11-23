@@ -20,12 +20,25 @@ import OccupiedError from "./OccupiedError";
 function Seat({ date }) {
   const [tables, setTables] = useState([]);
   const [tablesError, setTablesError] = useState(null);
-
   const [tableId, setTableId] = useState("");
-  const handleTableIdChange = (event) => setTableId(event.target.value);
-
   const [visibility, setVisibility] = useState(null);
   const [visibility2, setVisibility2] = useState(null);
+  const [capacity, setCapacity] = useState(null);
+  const [people, setPeople] = useState(null);
+
+  function handleTableIdChange(event) {
+    setTableId(event.target.value);
+
+    async function getTable(table_id) {
+      const response = await readTable(table_id);
+      setCapacity(response.capacity);
+      console.log("tableCapacity", capacity);
+    }
+    getTable(event.target.value);
+  }
+
+  //Get ReservationId from url
+  const { reservationId } = useParams();
 
   useEffect(loadTables, [date]);
 
@@ -33,17 +46,27 @@ function Seat({ date }) {
     const abortController = new AbortController();
     setTablesError(null);
     listTables(abortController.signal).then(setTables).catch(setTablesError);
+    loadPeople();
     return () => abortController.abort();
   }
+
+  function loadPeople() {
+    //Make call to get the reservation and check the number of people in the reservation
+    async function getReservation(reservationId) {
+      const response = await readReservation(reservationId);
+      setPeople(response.people);
+      console.log("peopleInside", people);
+    }
+    getReservation(reservationId);
+  }
+
+  console.log("peopleInside2", people);
 
   const tableLinks = tables.map((table) => (
     <option value={table.table_id}>
       {table.table_name} - capacity {table.capacity}
     </option>
   ));
-
-  //Get ReservationId from url
-  const { reservationId } = useParams();
 
   //Create the handleSubmit function to update the deck
   //This function creates a deck based on the user input and then uses updateDeck() api call
@@ -85,27 +108,15 @@ function Seat({ date }) {
     setVisibility(null);
     setVisibility2(null);
 
-    //Make call to get the reservation and check the number of people in the reservation
-    async function getReservation(reservationId) {
-      const response = await readReservation(reservationId);
-      let people = response.people;
-      console.log("people", people);
-    }
-    getReservation(reservationId);
+    console.log("logCapacity", capacity);
+    console.log("logPeople", people);
 
-    //Make call to get the table and check the capacity of the table
-    async function getTable(tableId) {
-      const response = await readTable(tableId);
-      let capacity = response.capacity;
-      console.log("tableCapacity", capacity);
-    }
-    getTable(tableId);
-
-    /*
-    if (reservationDate < today()) {
+    if (capacity < people) {
       setVisibility(true);
     }
 
+    console.log("visibilityStatus", visibility);
+    /*
     if (resDate.getDay() === 2) {
       setVisibility2(true);
     }*/

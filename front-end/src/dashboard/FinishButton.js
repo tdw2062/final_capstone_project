@@ -9,6 +9,7 @@ function FinishButton({ visibility, handleFinish, reservationId, tableId }) {
           type="button"
           class="btn btn-outline-primary"
           onClick={() => handleFinish(reservationId, tableId)}
+          data-table-id-finish={tableId}
         >
           Finish
         </button>

@@ -1,3 +1,5 @@
+const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
+
 /**
  * List handler for reservation resources
  */
@@ -25,7 +27,7 @@ async function update(req, res, next) {
 }
 
 module.exports = {
-  createTable,
-  list,
-  update,
+  createTable: asyncErrorBoundary(createTable),
+  list: asyncErrorBoundary(list),
+  update: asyncErrorBoundary(update),
 };

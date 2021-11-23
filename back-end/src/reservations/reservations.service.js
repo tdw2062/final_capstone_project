@@ -2,7 +2,10 @@ const knex = require("../db/connection");
 
 //List all reservations
 function list(params) {
-  return knex("reservations").select("*").where(params);
+  return knex("reservations")
+    .select("*")
+    .where(params)
+    .orderBy("reservation_time");
 }
 
 //List all tables

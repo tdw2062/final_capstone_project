@@ -31,12 +31,15 @@ function AddTable({ date }) {
       const response = await createTable(table);
     }
     newTable(table);
+
+    document.location.href = "/tables/new";
   };
 
   //Create the handleCancel function to cancel and return to the homepage1
   const handleCancel = (event) => {
     console.log("we here");
     event.preventDefault();
+    document.location.href = "/dashboard";
   };
 
   return (

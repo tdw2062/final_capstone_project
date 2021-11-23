@@ -1,3 +1,5 @@
+const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
+
 /**
  * List handler for reservation resources
  */
@@ -12,6 +14,7 @@ async function listTables(req, res, next) {
 
 async function list(req, res, next) {
   console.log("params", req.query);
+
   const response = await reservationsService.list(req.query);
   console.log("initial response", response);
   const data = response.filter((obj) => obj.status !== "finished");
@@ -30,6 +33,29 @@ async function reservationExists(req, res, next) {
   next({ status: 404, message: `Reservation cannot be found.` });
 }
 
+//Make sure that the reservation date is not in the past and that the day of the reservation is not a Tuesday
+async function validateDate(date, next) {
+  //Create date for reservation date
+  console.log("type of for date", typeof date);
+
+  let month = Number(date.substring(5, 7)) - 1;
+  let day = Number(date.substring(8, 10));
+  let year = Number(date.substring(0, 4));
+  let resDate = new Date(year, month, day);
+
+  //Create date for today to compare to resDate
+  let today = new Date();
+
+  //Check if reservation day is in the past or is a Tuesday
+  if (resDate.getDay() === 2 || resDate < today) {
+    next({
+      status: 400,
+      message:
+        "The date given cannot be in the past and cannot be on a Tuesday.",
+    });
+  }
+}
+
 //List a specific reservation
 async function read(req, res, next) {
   res.json({ data: res.locals.reservation });
@@ -37,6 +63,8 @@ async function read(req, res, next) {
 
 async function create(req, res, next) {
   console.log("request data", req.body);
+  let date = req.body.data.reservation_date;
+  validateDate(date, next);
   const data = await reservationsService.create(req.body.data);
   console.log("back-end data", data);
   res.status(201).json({ data });
@@ -58,11 +86,12 @@ async function update(req, res, next) {
 }
 
 module.exports = {
-  list,
-  listTables,
-  create,
-  createTable,
-  read: [reservationExists, read],
+  list: asyncErrorBoundary(list),
+
+  listTables: asyncErrorBoundary(listTables),
+  create: asyncErrorBoundary(create),
+  createTable: asyncErrorBoundary(createTable),
+  read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)],
 
   update,
 };

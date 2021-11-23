@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { listTables, updateReservation, updateTable } from "../utils/api";
+import {
+  listTables,
+  updateReservation,
+  updateTable,
+  readReservation,
+} from "../utils/api";
 import { useParams } from "react-router-dom";
 import ErrorAlert from "../layout/ErrorAlert";
+import CapacityError from "./CapacityError";
+import OccupiedError from "./OccupiedError";
 
 /**
  * Defines the dashboard page.
@@ -15,6 +22,9 @@ function Seat({ date }) {
 
   const [tableId, setTableId] = useState("");
   const handleTableIdChange = (event) => setTableId(event.target.value);
+
+  const [visibility, setVisibility] = useState(null);
+  const [visibility2, setVisibility2] = useState(null);
 
   useEffect(loadTables, [date]);
 
@@ -38,6 +48,7 @@ function Seat({ date }) {
   //This function creates a deck based on the user input and then uses updateDeck() api call
   const handleSubmit = (event) => {
     event.preventDefault();
+    validate();
     let reservation = {
       data: {},
     };
@@ -65,7 +76,30 @@ function Seat({ date }) {
     }
     changeTable(table);
 
-    document.location.href = "/dashboard2";
+    //document.location.href = "/dashboard";
+  };
+
+  const validate = () => {
+    //Reset visibility
+    setVisibility(null);
+    setVisibility2(null);
+
+    //Make call to get the reservation and check the capacity of the reservation
+    async function getReservation(reservationId) {
+      const response = await readReservation(reservationId);
+      let people = response.people;
+      console.log("people", people);
+    }
+    getReservation(reservationId);
+
+    /*
+    if (reservationDate < today()) {
+      setVisibility(true);
+    }
+
+    if (resDate.getDay() === 2) {
+      setVisibility2(true);
+    }*/
   };
 
   //Create the handleCancel function to return the user to the deck page
@@ -102,6 +136,8 @@ function Seat({ date }) {
           Cancel
         </button>
       </form>
+      <CapacityError visibility={visibility} />
+      <OccupiedError visibility2={visibility2} />
     </main>
   );
 }

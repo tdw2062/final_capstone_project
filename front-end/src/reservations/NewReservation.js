@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { createReservation } from "../utils/api";
 import { listReservations } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
+import { today } from "../utils/date-time";
+import PastDateError from "./PastDateError";
+import TuesdayError from "./TuesdayError";
 
 /**
  * Defines the dashboard page.
@@ -32,9 +35,14 @@ function NewReservation({ date }) {
   const [people, setPeople] = useState("");
   const handlePeopleChange = (event) => setPeople(event.target.value);
 
+  const [visibility, setVisibility] = useState(null);
+  const [visibility2, setVisibility2] = useState(null);
+
   //Create the handleSubmit function which creates a reservation based on the input and
   //makes an api call to add that reservation to the database
   const handleSubmit = (event) => {
+    validate();
+
     event.preventDefault();
     let reservation = {
       data: {},
@@ -52,12 +60,35 @@ function NewReservation({ date }) {
       const response = await createReservation(reservation);
     }
     newReservation(reservation);
+
+    //document.location.href = "/reservations/new";
+  };
+
+  const validate = () => {
+    //Reset visibility
+    setVisibility(null);
+    setVisibility2(null);
+
+    //Create date for reservation date
+    let month = Number(reservationDate.substring(5, 7)) - 1;
+    let day = Number(reservationDate.substring(8, 10));
+    let year = Number(reservationDate.substring(0, 4));
+    let resDate = new Date(year, month, day);
+
+    if (reservationDate < today()) {
+      setVisibility(true);
+    }
+
+    if (resDate.getDay() === 2) {
+      setVisibility2(true);
+    }
   };
 
   //Create the handleCancel function to cancel and return to the homepage1
   const handleCancel = (event) => {
     console.log("we here");
     event.preventDefault();
+    document.location.href = "/dashboard";
   };
 
   return (
@@ -142,6 +173,8 @@ function NewReservation({ date }) {
           Cancel
         </button>
       </form>
+      <PastDateError visibility={visibility} />
+      <TuesdayError visibility2={visibility2} />
     </main>
   );
 }

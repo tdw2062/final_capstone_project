@@ -94,7 +94,7 @@ function EditReservation({ date }) {
 
   //Create the handleCancel function to return the user to the deck page
   const handleCancel = (event) => {
-    document.location.href = `/dashboard2`;
+    document.location.href = `/dashboard`;
   };
 
   return (

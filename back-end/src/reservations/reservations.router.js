@@ -17,6 +17,12 @@ router
   .route("/:reservationId/seat")
   .get(controller.listTables)
   .post(controller.createTable)
+
+  .all(methodNotAllowed);
+
+router
+  .route("/:reservationId/seat/:tableId")
+  .put(controller.updateWithValidation)
   .all(methodNotAllowed);
 
 router

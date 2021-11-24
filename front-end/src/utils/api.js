@@ -127,6 +127,22 @@ export async function updateReservation(updatedReservation, signal) {
   };
   return await fetchJson(url, options, updatedReservation);
 }
+
+export async function updateReservationWithTableId(
+  updatedReservation,
+  tableId,
+  signal
+) {
+  const url = `${API_BASE_URL}/reservations/${updatedReservation.data.reservation_id}/seat/${tableId}`;
+  const options = {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(updatedReservation),
+    signal,
+  };
+  return await fetchJson(url, options, updatedReservation);
+}
+
 export async function updateTable(updatedTable, signal) {
   const url = `${API_BASE_URL}/tables/${updatedTable.data.table_id}/seat`;
   const options = {

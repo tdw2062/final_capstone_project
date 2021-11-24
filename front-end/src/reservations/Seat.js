@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   listTables,
-  updateReservation,
+  updateReservationWithTableId,
   updateTable,
   readReservation,
   readTable,
@@ -80,11 +80,11 @@ function Seat({ date }) {
     reservation.data.reservation_id = reservationId;
     reservation.data.status = "seated";
 
-    async function changeReservation(reservation) {
-      const response = await updateReservation(reservation);
+    async function changeReservation(reservation, tableId) {
+      const response = await updateReservationWithTableId(reservation, tableId);
       console.log(response);
     }
-    changeReservation(reservation);
+    changeReservation(reservation, tableId);
 
     let table = {
       data: {},

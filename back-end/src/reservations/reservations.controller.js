@@ -85,6 +85,32 @@ async function update(req, res, next) {
   res.json({ data: response });
 }
 
+//Make sure that the table has sufficient capacity
+async function validateCapacity(people, capacity, next) {
+  //Check that capacity is sufficient for the number of people
+  if (people > capacity) {
+    next({
+      status: 400,
+      message: "The table must have sufficient capacity to seat the party.",
+    });
+  }
+}
+
+async function updateWithValidation(req, res, next) {
+  //Set the reservation
+  let reservation = res.locals.reservation;
+  const table = await reservationsService.readTable(req.params.tableId);
+  console.log("tableCapacity", table.capacity);
+
+  validateCapacity(reservation.people, table.capacity, next);
+
+  const response = await reservationsService.update(
+    req.body.data,
+    req.params.reservationId
+  );
+  res.json({ data: response });
+}
+
 module.exports = {
   list: asyncErrorBoundary(list),
 
@@ -92,6 +118,9 @@ module.exports = {
   create: asyncErrorBoundary(create),
   createTable: asyncErrorBoundary(createTable),
   read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)],
-
-  update,
+  update: asyncErrorBoundary(update),
+  updateWithValidation: [
+    asyncErrorBoundary(reservationExists),
+    asyncErrorBoundary(updateWithValidation),
+  ],
 };

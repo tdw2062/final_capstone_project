@@ -86,12 +86,14 @@ async function update(req, res, next) {
 }
 
 //Make sure that the table has sufficient capacity
-async function validateCapacity(people, capacity, next) {
+async function validateCapacity(people, capacity, reservation_id, next) {
   //Check that capacity is sufficient for the number of people
-  if (people > capacity) {
+  if (people > capacity || reservation_id !== null) {
+    console.log("400 error");
     next({
       status: 400,
-      message: "The table must have sufficient capacity to seat the party.",
+      message:
+        "The table must have sufficient capacity to seat the party and it must not be occupied.",
     });
   }
 }
@@ -102,7 +104,12 @@ async function updateWithValidation(req, res, next) {
   const table = await reservationsService.readTable(req.params.tableId);
   console.log("tableCapacity", table.capacity);
 
-  validateCapacity(reservation.people, table.capacity, next);
+  validateCapacity(
+    reservation.people,
+    table.capacity,
+    table.reservation_id,
+    next
+  );
 
   const response = await reservationsService.update(
     req.body.data,

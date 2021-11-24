@@ -5,6 +5,7 @@ import ErrorAlert from "../layout/ErrorAlert";
 import { today } from "../utils/date-time";
 import PastDateError from "./PastDateError";
 import TuesdayError from "./TuesdayError";
+import TimeError from "./TimeError";
 
 /**
  * Defines the dashboard page.
@@ -37,6 +38,7 @@ function NewReservation({ date }) {
 
   const [visibility, setVisibility] = useState(null);
   const [visibility2, setVisibility2] = useState(null);
+  const [visibility3, setVisibility3] = useState(null);
 
   //Create the handleSubmit function which creates a reservation based on the input and
   //makes an api call to add that reservation to the database
@@ -68,19 +70,43 @@ function NewReservation({ date }) {
     //Reset visibility
     setVisibility(null);
     setVisibility2(null);
+    setVisibility3(null);
 
     //Create date for reservation date
     let month = Number(reservationDate.substring(5, 7)) - 1;
     let day = Number(reservationDate.substring(8, 10));
     let year = Number(reservationDate.substring(0, 4));
-    let resDate = new Date(year, month, day);
+    let hours = Number(reservationTime.substring(0, 2));
+    let minutes = Number(reservationTime.substring(3));
 
-    if (reservationDate < today()) {
+    let resDate = new Date(year, month, day);
+    resDate.setHours(hours);
+    resDate.setMinutes(minutes);
+
+    let today = new Date();
+    console.log("today", today);
+    console.log("resDate", resDate);
+
+    if (resDate.valueOf() < today.valueOf()) {
       setVisibility(true);
     }
 
     if (resDate.getDay() === 2) {
       setVisibility2(true);
+    }
+
+    if (
+      resDate.getHours() < 9 ||
+      (resDate.getHours() === 9 && resDate.getMinutes() < 30)
+    ) {
+      setVisibility3(true);
+    }
+
+    if (
+      resDate.getHours() > 21 ||
+      (resDate.getHours() === 21 && resDate.getMinutes() > 30)
+    ) {
+      setVisibility3(true);
     }
   };
 
@@ -175,6 +201,7 @@ function NewReservation({ date }) {
       </form>
       <PastDateError visibility={visibility} />
       <TuesdayError visibility2={visibility2} />
+      <TimeError visibility3={visibility3} />
     </main>
   );
 }

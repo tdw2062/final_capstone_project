@@ -25,6 +25,7 @@ function Seat({ date }) {
   const [visibility2, setVisibility2] = useState(null);
   const [capacity, setCapacity] = useState(null);
   const [people, setPeople] = useState(null);
+  const [occupied, setOccupied] = useState(null);
 
   function handleTableIdChange(event) {
     setTableId(event.target.value);
@@ -32,6 +33,7 @@ function Seat({ date }) {
     async function getTable(table_id) {
       const response = await readTable(table_id);
       setCapacity(response.capacity);
+      setOccupied(response.reservation_id);
       console.log("tableCapacity", capacity);
     }
     getTable(event.target.value);
@@ -116,10 +118,10 @@ function Seat({ date }) {
     }
 
     console.log("visibilityStatus", visibility);
-    /*
-    if (resDate.getDay() === 2) {
+
+    if (occupied !== null) {
       setVisibility2(true);
-    }*/
+    }
   };
 
   //Create the handleCancel function to return the user to the deck page

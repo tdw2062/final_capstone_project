@@ -34,24 +34,54 @@ async function reservationExists(req, res, next) {
 }
 
 //Make sure that the reservation date is not in the past and that the day of the reservation is not a Tuesday
-async function validateDate(date, next) {
+async function validateDate(date, time, next) {
   //Create date for reservation date
   console.log("type of for date", typeof date);
+  console.log("time", time);
 
   let month = Number(date.substring(5, 7)) - 1;
   let day = Number(date.substring(8, 10));
   let year = Number(date.substring(0, 4));
+  let hours = Number(time.substring(0, 2));
+  let minutes = Number(time.substring(3, 5));
+
+  console.log("extractedHours", hours, "extractedMinutes", minutes);
+
   let resDate = new Date(year, month, day);
+  resDate.setHours(hours);
+  resDate.setMinutes(minutes);
 
   //Create date for today to compare to resDate
   let today = new Date();
 
   //Check if reservation day is in the past or is a Tuesday
-  if (resDate.getDay() === 2 || resDate < today) {
+  if (resDate.getDay() === 2 || resDate.valueOf() < today.valueOf()) {
     next({
       status: 400,
       message:
         "The date given cannot be in the past and cannot be on a Tuesday.",
+    });
+  }
+
+  //Check if the reservation is before 10:30 AM
+  if (
+    resDate.getHours() < 9 ||
+    (resDate.getHours() === 9 && resDate.getMinutes() < 30)
+  ) {
+    next({
+      status: 400,
+      message: "The reservation time cannot be before 10:30AM or after 9:30PM.",
+    });
+  }
+
+  //Check if the reservation is after 9:30PM
+  if (
+    resDate.getHours() > 21 ||
+    (resDate.getHours() === 21 && resDate.getMinutes() > 30)
+  ) {
+    next({
+      status: 400,
+      message: "The reservation time cannot be before 10:30AM or after 9:30PM.",
     });
   }
 }
@@ -64,7 +94,8 @@ async function read(req, res, next) {
 async function create(req, res, next) {
   console.log("request data", req.body);
   let date = req.body.data.reservation_date;
-  validateDate(date, next);
+  let time = req.body.data.reservation_time;
+  validateDate(date, time, next);
   const data = await reservationsService.create(req.body.data);
   console.log("back-end data", data);
   res.status(201).json({ data });

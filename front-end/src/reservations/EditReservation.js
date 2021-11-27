@@ -5,6 +5,7 @@ import {
   readReservation,
   updateReservation,
 } from "../utils/api";
+import StatusError from "./StatusError";
 import ErrorAlert from "../layout/ErrorAlert";
 
 /**
@@ -39,6 +40,8 @@ function EditReservation({ date }) {
   const [status, setStatus] = useState("");
   const handleStatusChange = (event) => setStatus(event.target.value);
 
+  const [visibility, setVisibility] = useState(null);
+
   //Get ReservationId from url
   const { reservationId } = useParams();
 
@@ -61,35 +64,40 @@ function EditReservation({ date }) {
   //This function creates a deck based on the user input and then uses updateDeck() api call
   const handleSubmit = (event) => {
     event.preventDefault();
-    let reservation = {
-      data: {},
-    };
 
-    reservation.data.reservation_id = reservationId;
-    reservation.data.first_name = firstName;
-    reservation.data.last_name = lastName;
-    reservation.data.mobile_number = mobileNumber;
-    reservation.data.reservation_date = reservationDate;
-    reservation.data.reservation_time = reservationTime;
-    reservation.data.people = people;
-    reservation.data.status = status;
-    console.log("submit reservation", reservation);
+    if (status !== "booked") {
+      setVisibility(true);
+    } else {
+      let reservation = {
+        data: {},
+      };
 
-    async function changeReservation(reservation) {
-      const response = await updateReservation(reservation);
-      console.log(response);
+      reservation.data.reservation_id = reservationId;
+      reservation.data.first_name = firstName;
+      reservation.data.last_name = lastName;
+      reservation.data.mobile_number = mobileNumber;
+      reservation.data.reservation_date = reservationDate;
+      reservation.data.reservation_time = reservationTime;
+      reservation.data.people = people;
+      reservation.data.status = status;
+      console.log("submit reservation", reservation);
+
+      async function changeReservation(reservation) {
+        const response = await updateReservation(reservation);
+        console.log(response);
+      }
+      changeReservation(reservation);
+
+      setFirstName("");
+      setLastName("");
+      setMobileNumber("");
+      setReservationDate("");
+      setReservationTime("");
+      setPeople("");
+      setStatus("");
+
+      //document.location.href = "/";
     }
-    changeReservation(reservation);
-
-    setFirstName("");
-    setLastName("");
-    setMobileNumber("");
-    setReservationDate("");
-    setReservationTime("");
-    setPeople("");
-    setStatus("");
-
-    //document.location.href = "/";
   };
 
   //Create the handleCancel function to return the user to the deck page
@@ -190,6 +198,7 @@ function EditReservation({ date }) {
           Cancel
         </button>
       </form>
+      <StatusError visibility={visibility} />
     </main>
   );
 }

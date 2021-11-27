@@ -54,12 +54,6 @@ function Dashboard({ date }) {
     reservation.data.status = "finished";
     console.log("reservation", reservation);
 
-    async function changeReservation(reservation) {
-      const response = await updateReservation(reservation);
-      console.log("response", response);
-    }
-    changeReservation(reservation);
-
     let table = {
       data: {},
     };
@@ -67,6 +61,15 @@ function Dashboard({ date }) {
     table.data.table_id = tableId;
     table.data.reservation_id = null;
     console.log("table", table);
+
+    async function changeReservation(reservation) {
+      console.log("updatedReservation");
+      const response = await updateReservation(reservation);
+      console.log("response", response);
+    }
+
+    console.log("reservationId", reservationId);
+    if (reservationId !== null) changeReservation(reservation);
 
     async function changeTable(table) {
       const response = await updateTable(table);

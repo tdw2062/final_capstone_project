@@ -32,6 +32,12 @@ async function create(req, res, next) {
 }
 
 async function update(req, res, next) {
+  const record = await tablesService.read(req.params.tableId);
+  console.log("thisRecord", record);
+  if (record.reservation_id === null) {
+    next({ status: 400, message: `Table is not occupied.` });
+  }
+
   const response = await tablesService.update(
     req.body.data,
     req.params.tableId

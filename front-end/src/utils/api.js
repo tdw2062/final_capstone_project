@@ -146,7 +146,7 @@ export async function updateReservationWithTableId(
 export async function updateTable(updatedTable, signal) {
   const url = `${API_BASE_URL}/tables/${updatedTable.data.table_id}/seat`;
   const options = {
-    method: "PUT",
+    method: "DELETE",
     headers,
     body: JSON.stringify(updatedTable),
     signal,

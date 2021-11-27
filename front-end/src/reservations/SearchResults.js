@@ -15,6 +15,7 @@ function SearchResults({ visibility, phoneNumber }) {
     listReservations({ mobile_number }, abortController.signal)
       .then(setReservations)
       .catch(setReservationsError);
+    console.log("reservationsFound", reservations);
     return () => abortController.abort();
   }
 
@@ -30,20 +31,28 @@ function SearchResults({ visibility, phoneNumber }) {
   ));
 
   if (visibility !== null) {
-    return (
-      <div>
-        <h1>Reservations Found for {phoneNumber}</h1>
-        <table>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Mobile Number</th>
-          <th>Reservation Date</th>
-          <th>Reservation Time</th>
-          <th>People</th>
-          {reservationLinks}
-        </table>
-      </div>
-    );
+    if (reservations.length === 0) {
+      return (
+        <div>
+          <h1>No reservations found</h1>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <h1>Reservations Found for {phoneNumber}</h1>
+          <table>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Mobile Number</th>
+            <th>Reservation Date</th>
+            <th>Reservation Time</th>
+            <th>People</th>
+            {reservationLinks}
+          </table>
+        </div>
+      );
+    }
   } else {
     return null;
   }

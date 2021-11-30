@@ -22,6 +22,10 @@ router
 router.route("/:tableId").get(controller.read).all(methodNotAllowed);
 
 //Route to list all tables
-router.route("/").get(controller.list).all(methodNotAllowed);
+router
+  .route("/")
+  .get(controller.list)
+  .post(controller.createTable)
+  .all(methodNotAllowed);
 
 module.exports = router;

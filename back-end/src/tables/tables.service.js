@@ -15,7 +15,7 @@ function read(table_id) {
 
 //List all reservations
 function list() {
-  return knex("tables").select("*");
+  return knex("tables").select("*").orderBy("table_name");
 }
 
 //Update a table by tableId

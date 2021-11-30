@@ -1,3 +1,7 @@
+//The StatusError is used when the the user tries to edit a reservation that does not have a status of "booked"
+//The Error appears on the Dashboard Component next to the reservation
+//The sole prop is visibility
+
 import React, { useEffect, useState } from "react";
 
 function StatusError({ visibility }) {

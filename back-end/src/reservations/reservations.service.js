@@ -1,6 +1,6 @@
 const knex = require("../db/connection");
 
-//List all reservations
+//List all reservations filtered by params (usually 'date')
 function list(params) {
   return knex("reservations")
     .select("*")
@@ -18,11 +18,12 @@ function read(reservation_id) {
   return knex("reservations").select("*").where({ reservation_id }).first();
 }
 
-//List all tables
+//Get one table by table_id
 function readTable(table_id) {
   return knex("tables").select("*").where({ table_id }).first();
 }
 
+//Create (post) a new reservation
 function create(reservation) {
   return knex("reservations")
     .insert(reservation)
@@ -30,6 +31,7 @@ function create(reservation) {
     .then((results) => results[0]);
 }
 
+//Create (post) a new table
 function createTable(table) {
   return knex("tables")
     .insert(table)
@@ -37,6 +39,7 @@ function createTable(table) {
     .then((results) => results[0]);
 }
 
+//Modify a given reservation by reservationId
 function update(updatedReservation, reservationId) {
   return knex("reservations")
     .select("*")

@@ -1,3 +1,7 @@
+//The PastDateError is used when the the user tries to enter a reservation on a date in the past
+//The PastDateError on the NewReservation Component
+//The sole prop is visibility
+
 import React, { useEffect, useState } from "react";
 
 function PastDateError({ visibility }) {

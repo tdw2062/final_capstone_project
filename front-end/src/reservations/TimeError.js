@@ -1,3 +1,7 @@
+//The TimeError is used when the the user tries enter a reservation during an invalid time
+//The TimeError appears on the NewReservation Component
+//The sole prop is visibility3
+
 import React, { useEffect, useState } from "react";
 
 function TimeError({ visibility3 }) {

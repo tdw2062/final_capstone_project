@@ -10,30 +10,17 @@ import ErrorAlert from "../layout/ErrorAlert";
  * @returns {JSX.Element}
  */
 function Search({ date }) {
-  //Create name and description state variables and add event listeners
+  //Create the phone nubmer state variable and add event listeners
   const [phoneNumber, setPhoneNumber] = useState("");
   const handlePhoneNumberChange = (event) => setPhoneNumber(event.target.value);
 
   const [visibilityStatus, setVisibilityStatus] = useState(null);
 
+  //The handleSubmit function merely shows the search results
   const handleSubmit = (event) => {
     event.preventDefault();
     setVisibilityStatus(true);
     console.log("phoneNumber", phoneNumber);
-    /*let table = {
-      data: {},
-    };
-
-    table.data.table_name = tableName;
-    table.data.capacity = capacity;
-
-    console.log("submit table", table);
-
-    async function newTable(table) {
-      const response = await createTable(table);
-    }
-    newTable(table);
-    */
   };
 
   //Create the handleCancel function to cancel and return to the homepage1
@@ -42,6 +29,7 @@ function Search({ date }) {
     event.preventDefault();
   };
 
+  //Return the form to enter the phone number and show the results
   return (
     <main>
       <h1>Find Reservations</h1>

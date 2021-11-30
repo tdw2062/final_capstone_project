@@ -1,5 +1,9 @@
+//The main functions of the Dashboard component are to display all of the reservations
+//and allow the user to seat, edit, or cancel reservations and to display all of the
+//tables and allow the user to finish the tables
+
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { listReservations, updateReservation, updateTable } from "../utils/api";
 import { listTables } from "../utils/api";
 import SeatButton from "./SeatButton";
@@ -16,11 +20,49 @@ import ErrorAlert from "../layout/ErrorAlert";
 function Dashboard({ date }) {
   console.log("reprint date", date);
 
+  //The main state variables are reservations and tables which are arrays to be displayed
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
   const [tables, setTables] = useState([]);
   const [tablesError, setTablesError] = useState(null);
 
+  //Create the functionality for the prev, today, and next buttons to toggle dates
+
+  //Function to add a day to a date
+  Date.prototype.addDays = function (days) {
+    var date = new Date(this.valueOf());
+    date.setDate(date.getDate() + days);
+    return date;
+  };
+
+  //Extract the year, month, and day from the date passed in and use it to
+  //create a date that can be incremented and decremented
+  let month = Number(date.substring(5, 7));
+  let day = Number(date.substring(8, 10));
+  let year = Number(date.substring(0, 4));
+
+  let currDate = new Date(year, month, day);
+  let prevDate = currDate.addDays(-1);
+
+  let prevDateString =
+    prevDate.getFullYear() +
+    "-" +
+    prevDate.getMonth() +
+    "-" +
+    prevDate.getDate();
+  console.log("prevDateString", prevDateString);
+  let nextDate = currDate.addDays(1);
+  let nextDateString =
+    nextDate.getFullYear() +
+    "-" +
+    nextDate.getMonth() +
+    "-" +
+    nextDate.getDate();
+  console.log("nextDateString", nextDateString);
+
+  //Use useEffect to load the reservations and the tables
+
+  //Load reservations
   useEffect(loadDashboard, [date]);
 
   function loadDashboard() {
@@ -33,6 +75,7 @@ function Dashboard({ date }) {
     return () => abortController.abort();
   }
 
+  //Load tables
   useEffect(loadTables, [date]);
 
   function loadTables() {
@@ -42,9 +85,10 @@ function Dashboard({ date }) {
     return () => abortController.abort();
   }
 
-  //Create the handleSubmit function to update the deck
-  //This function creates a deck based on the user input and then uses updateDeck() api call
+  //Create the handleFinish function to finish a table
+  //This function changes the status of a reservation to 'finished' and the status of table to 'free'
   function handleFinish(reservationId, tableId) {
+    //Create a reservation object with a reservation_id and set the status to 'finished'
     console.log("reservationId", reservationId);
     let reservation = {
       data: {},
@@ -54,6 +98,7 @@ function Dashboard({ date }) {
     reservation.data.status = "finished";
     console.log("reservation", reservation);
 
+    //Create a table object with a table_id and set the reservation_id to null (which makes it 'free')
     let table = {
       data: {},
     };
@@ -62,6 +107,7 @@ function Dashboard({ date }) {
     table.data.reservation_id = null;
     console.log("table", table);
 
+    //Make an api call to update the reservation's status
     async function changeReservation(reservation) {
       console.log("updatedReservation");
       const response = await updateReservation(reservation);
@@ -71,6 +117,7 @@ function Dashboard({ date }) {
     console.log("reservationId", reservationId);
     if (reservationId !== null) changeReservation(reservation);
 
+    //Make an api call to update the table's status
     async function changeTable(table) {
       const response = await updateTable(table);
       console.log(response);
@@ -80,8 +127,12 @@ function Dashboard({ date }) {
     document.location.href = "/dashboard";
   }
 
+  //Create a handleCancel function to cancel a reservation
+  //This function sets a reservation's status to cancelled
   function handleCancel(reservationId) {
+    //Create a reservation object with a reservation_id and set the status to cancelled
     console.log("reservationId", reservationId);
+
     let reservation = {
       data: {},
     };
@@ -90,6 +141,7 @@ function Dashboard({ date }) {
     reservation.data.status = "cancelled";
     console.log("reservation", reservation);
 
+    //Make an api call to update the status of the reservation
     async function changeReservation(reservation) {
       const response = await updateReservation(reservation);
       console.log("response", response);
@@ -99,6 +151,7 @@ function Dashboard({ date }) {
     document.location.href = "/dashboard";
   }
 
+  //Create table rows using the 'reservations' state array
   const reservationLinks = reservations.map((reservation) => {
     let visible = reservation.status === "booked" ? true : null;
     let visible2 = reservation.status !== "cancelled" ? true : null;
@@ -137,6 +190,7 @@ function Dashboard({ date }) {
     );
   });
 
+  //Create table rows using the 'tables' state array
   const tableLinks = tables.map((table) => {
     let visible = table.reservation_id ? true : null;
 
@@ -158,6 +212,7 @@ function Dashboard({ date }) {
     );
   });
 
+  //Return the html code for the reservations and the tables
   return (
     <main>
       <h1>Reservations</h1>
@@ -174,6 +229,29 @@ function Dashboard({ date }) {
         </tr>
 
         {reservationLinks}
+        <tr>
+          <td>
+            <Link to={`/dashboard?date=${prevDateString}`}>
+              <button type="button" class="btn btn-primary">
+                Previous
+              </button>
+            </Link>{" "}
+          </td>
+          <td>
+            <Link to={`/dashboard`}>
+              <button type="button" class="btn btn-primary">
+                Today
+              </button>
+            </Link>{" "}
+          </td>
+          <td>
+            <Link to={`/dashboard?date=${nextDateString}`}>
+              <button type="button" class="btn btn-primary">
+                Next
+              </button>
+            </Link>{" "}
+          </td>
+        </tr>
       </table>
       <br />
       <h1>Tables for Seating</h1>

@@ -1,3 +1,5 @@
+//The Seat Component is used to assign a reservation to a table
+
 import React, { useEffect, useState } from "react";
 import {
   listTables,
@@ -18,6 +20,7 @@ import OccupiedError from "./OccupiedError";
  * @returns {JSX.Element}
  */
 function Seat({ date }) {
+  //Create state variables
   const [tables, setTables] = useState([]);
   const [tablesError, setTablesError] = useState(null);
   const [tableId, setTableId] = useState("");
@@ -27,6 +30,8 @@ function Seat({ date }) {
   const [people, setPeople] = useState(null);
   const [occupied, setOccupied] = useState(null);
 
+  //The handleTableIdChange function is called whenever the value for the table drop-down is changed
+  //This function sets the table_id, capacity, and occupied status of the table
   function handleTableIdChange(event) {
     setTableId(event.target.value);
 
@@ -42,6 +47,7 @@ function Seat({ date }) {
   //Get ReservationId from url
   const { reservationId } = useParams();
 
+  //Use useEffect to load the tables
   useEffect(loadTables, [date]);
 
   function loadTables() {
@@ -64,14 +70,17 @@ function Seat({ date }) {
 
   console.log("peopleInside2", people);
 
+  //Create table rows from the tables state array and use to populate the drop-down
   const tableLinks = tables.map((table) => (
     <option value={table.table_id}>
       {table.table_name} - capacity {table.capacity}
     </option>
   ));
 
-  //Create the handleSubmit function to update the deck
-  //This function creates a deck based on the user input and then uses updateDeck() api call
+  //Create the handleSubmit function to seat a party at a table
+  //This function changes the status of a reservation to "seated" and it
+  //changes the reservation_id on the table to match the party's reservation_id
+  //so that the table is "occupied"
   const handleSubmit = (event) => {
     event.preventDefault();
     validate();
@@ -105,6 +114,8 @@ function Seat({ date }) {
     //document.location.href = "/dashboard";
   };
 
+  //The validate function is used by the handleSubmit function to make sure
+  //that the table has sufficient capacity and that it is not occupied.
   const validate = () => {
     //Reset visibility
     setVisibility(null);
@@ -124,11 +135,12 @@ function Seat({ date }) {
     }
   };
 
-  //Create the handleCancel function to return the user to the deck page
+  //Create the handleCancel function to return the user to the reservations page
   const handleCancel = (event) => {
     document.location.href = `/reservations`;
   };
 
+  //Return the drop-down and the submit button to allow a user to seat a party at a table
   return (
     <main>
       <h1>Seat the Party</h1>

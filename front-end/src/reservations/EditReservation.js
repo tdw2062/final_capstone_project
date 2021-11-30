@@ -45,7 +45,7 @@ function EditReservation({ date }) {
   //Get ReservationId from url
   const { reservationId } = useParams();
 
-  //Make an API Call to get the reservation based on the deckID
+  //Make an API Call to get the reservation based on the reservation_id
   useEffect(() => {
     async function getReservation(reservationId) {
       const response = await readReservation(reservationId);
@@ -61,7 +61,7 @@ function EditReservation({ date }) {
   }, [reservationId]);
 
   //Create the handleSubmit function to update the deck
-  //This function creates a deck based on the user input and then uses updateDeck() api call
+  //This function creates a reservation based on the user input and then uses changeReservation() api call
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -105,6 +105,7 @@ function EditReservation({ date }) {
     document.location.href = `/dashboard`;
   };
 
+  //Return the form to enter the reservation details
   return (
     <main>
       <h1>Edit Reservation</h1>

@@ -14,7 +14,7 @@ import TimeError from "./TimeError";
  * @returns {JSX.Element}
  */
 function NewReservation({ date }) {
-  //Create name and description state variables and add event listeners
+  //Create state variables and add event listeners
   const [firstName, setFirstName] = useState("");
   const handleFirstNameChange = (event) => setFirstName(event.target.value);
 
@@ -36,6 +36,7 @@ function NewReservation({ date }) {
   const [people, setPeople] = useState("");
   const handlePeopleChange = (event) => setPeople(event.target.value);
 
+  //Set visibility for the different types of errors that can occur
   const [visibility, setVisibility] = useState(null);
   const [visibility2, setVisibility2] = useState(null);
   const [visibility3, setVisibility3] = useState(null);
@@ -66,6 +67,8 @@ function NewReservation({ date }) {
     //document.location.href = "/reservations/new";
   };
 
+  //The validate function ensures that the reservation is not in the past, on a Tuesday,
+  //or before 10:00AM or after 9:30PM
   const validate = () => {
     //Reset visibility
     setVisibility(null);
@@ -117,6 +120,7 @@ function NewReservation({ date }) {
     document.location.href = "/dashboard";
   };
 
+  //Return the form with inputs to create a new reservation
   return (
     <main>
       <h1>Add a New Reservation</h1>

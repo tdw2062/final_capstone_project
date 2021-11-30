@@ -1,5 +1,6 @@
 const knex = require("../db/connection");
 
+//Create a table
 function createTable(table) {
   return knex("tables")
     .insert(table)
@@ -7,7 +8,7 @@ function createTable(table) {
     .then((results) => results[0]);
 }
 
-//Get one table table_id
+//Get one table by table_id
 function read(table_id) {
   return knex("tables").select("*").where({ table_id }).first();
 }
@@ -17,6 +18,7 @@ function list() {
   return knex("tables").select("*");
 }
 
+//Update a table by tableId
 function update(updatedTable, tableId) {
   return knex("tables")
     .select("*")

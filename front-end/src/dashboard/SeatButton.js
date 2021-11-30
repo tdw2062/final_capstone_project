@@ -1,3 +1,7 @@
+//The Seat Button is used to seat a reservation
+//The button will appear next to a reservation on the Dashboard
+//The two props are visibility and reservationId
+
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 

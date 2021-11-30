@@ -9,15 +9,19 @@ import ErrorAlert from "../layout/ErrorAlert";
  * @returns {JSX.Element}
  */
 function AddTable({ date }) {
-  //Create name and description state variables and add event listeners
+  //Create tableName and capacity state variables and add event listeners
   const [tableName, setTableName] = useState("");
   const handleTableNameChange = (event) => setTableName(event.target.value);
 
   const [capacity, setCapacity] = useState("");
   const handleCapacityChange = (event) => setCapacity(event.target.value);
 
+  //The handleSubmit function creates a new table and posts it to the db
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    //Create a table object and set its name and capacity according to the
+    //input fields
     let table = {
       data: {},
     };
@@ -27,6 +31,7 @@ function AddTable({ date }) {
 
     console.log("submit table", table);
 
+    //Make an api call to post the new table to the db
     async function newTable(table) {
       const response = await createTable(table);
     }
@@ -35,13 +40,14 @@ function AddTable({ date }) {
     document.location.href = "/tables/new";
   };
 
-  //Create the handleCancel function to cancel and return to the homepage1
+  //Create the handleCancel function to cancel and return to the homepage
   const handleCancel = (event) => {
     console.log("we here");
     event.preventDefault();
     document.location.href = "/dashboard";
   };
 
+  //Return the html with inputs for entering the tableName and capacity
   return (
     <main>
       <h1>Add a Table</h1>

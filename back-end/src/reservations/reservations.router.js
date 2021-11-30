@@ -8,30 +8,35 @@ const router = require("express").Router();
 const controller = require("./reservations.controller");
 const methodNotAllowed = require("../errors/methodNotAllowed");
 
+//Route to edit a reservation
 router
   .route("/:reservationId/edit")
   .put(controller.update)
   .all(methodNotAllowed);
 
+//Route to seat a reservation
 router
   .route("/:reservationId/seat")
   .get(controller.listTables)
   .post(controller.createTable)
-
   .all(methodNotAllowed);
 
+//Route to seat a specific table
 router
   .route("/:reservationId/seat/:tableId")
   .put(controller.updateWithValidation)
   .all(methodNotAllowed);
 
+//Route to update the status of a table
 router
   .route("/:reservationId/status")
   .put(controller.update)
   .all(methodNotAllowed);
 
+//Route to get a specific table
 router.route("/:reservationId").get(controller.read).all(methodNotAllowed);
 
+//Route to list all tables or create a new table
 router
   .route("/")
   .get(controller.list)

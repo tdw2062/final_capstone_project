@@ -81,7 +81,7 @@ function Seat({ date }) {
   //This function changes the status of a reservation to "seated" and it
   //changes the reservation_id on the table to match the party's reservation_id
   //so that the table is "occupied"
-  const handleSubmit = (event) => {
+  async function handleSubmit(event) {
     event.preventDefault();
     validate();
     let reservation = {
@@ -95,7 +95,7 @@ function Seat({ date }) {
       const response = await updateReservationWithTableId(reservation, tableId);
       console.log(response);
     }
-    changeReservation(reservation, tableId);
+    await changeReservation(reservation, tableId);
 
     let table = {
       data: {},
@@ -109,10 +109,10 @@ function Seat({ date }) {
       const response = await updateTable(table);
       console.log(response);
     }
-    changeTable(table);
+    await changeTable(table);
 
     //document.location.href = "/dashboard";
-  };
+  }
 
   //The validate function is used by the handleSubmit function to make sure
   //that the table has sufficient capacity and that it is not occupied.

@@ -146,6 +146,17 @@ export async function updateReservationWithTableId(
 export async function updateTable(updatedTable, signal) {
   const url = `${API_BASE_URL}/tables/${updatedTable.data.table_id}/seat`;
   const options = {
+    method: "PUT",
+    headers,
+    body: JSON.stringify(updatedTable),
+    signal,
+  };
+  return await fetchJson(url, options, updatedTable);
+}
+
+export async function updateTableStatus(updatedTable, signal) {
+  const url = `${API_BASE_URL}/tables/${updatedTable.data.table_id}/seat`;
+  const options = {
     method: "DELETE",
     headers,
     body: JSON.stringify(updatedTable),

@@ -44,6 +44,7 @@ async function createTable(req, res, next) {
 //Helper function that determines if a given reservation exists (by reservationId)
 async function tableExists(req, res, next) {
   const table = await tablesService.read(req.params.tableId);
+  console.log("tableFound", table);
   if (table) {
     res.locals.table = table;
     return next();
@@ -57,6 +58,7 @@ async function tableExists(req, res, next) {
 //List all of the tables
 async function list(req, res, next) {
   const data = await tablesService.list();
+
   res.json({ data });
 }
 
@@ -67,14 +69,35 @@ async function read(req, res, next) {
 
 //Update a table, first making sure that reservation_id is not null (the table is occupied)
 async function update(req, res, next) {
-  const record = await tablesService.read(req.params.tableId);
-  console.log("thisRecord", record);
-  if (record.reservation_id === null) {
+  //Make sure a reservation_id is present
+  if (!req.body.data || !req.body.data.reservation_id) {
     next({
       status: 400,
-      message: `Table is not occupied (reservation_id is null).`,
+      message: `The request body should contain a reservation_id.`,
     });
   }
+
+  //Make sure the reservation_id exists
+  const reservation = await tablesService.readReservation(
+    req.body.data.reservation_id
+  );
+  if (!reservation) {
+    next({
+      status: 404,
+      message: `The reservation_id ${req.body.data.reservation_id} cannot be found.`,
+    });
+  }
+
+  //Grab the table to run validateCapacity
+  const table = await tablesService.read(req.params.tableId);
+  console.log("tableId", table.table_id);
+
+  validateCapacity(
+    reservation.people,
+    table.capacity,
+    table.reservation_id,
+    next
+  );
 
   const response = await tablesService.update(
     req.body.data,
@@ -83,9 +106,57 @@ async function update(req, res, next) {
   res.json({ data: response });
 }
 
+//Make sure that the table has sufficient capacity
+async function validateCapacity(people, capacity, reservation_id, next) {
+  console.log("fromTables");
+  //Check that capacity is sufficient for the number of people
+  console.log(
+    "people",
+    people,
+    "capacity",
+    capacity,
+    "reservation_id",
+    reservation_id
+  );
+  if (people > capacity || reservation_id !== null) {
+    console.log("400 error");
+    next({
+      status: 400,
+      message:
+        "The table must have sufficient capacity to seat the party and it must not be occupied.",
+    });
+  }
+}
+
+async function updateTableStatus(req, res, next) {
+  const record = res.locals.table;
+  console.log("thisRecord", record);
+  console.log("requestBody", req.body.data);
+  if (record.reservation_id === null) {
+    next({
+      status: 400,
+      message: `Table is not occupied (reservation_id is null).`,
+    });
+  }
+  //If no request body is given, set reservation_id to null
+  let requestBody = null;
+  if (!req.body.data) {
+    requestBody = { reservation_id: null };
+  } else {
+    requestBody = req.body.data;
+  }
+  //Update the table in the DB
+  const response = await tablesService.update(requestBody, req.params.tableId);
+  res.json({ data: response });
+}
+
 module.exports = {
   createTable: asyncErrorBoundary(createTable),
   list: asyncErrorBoundary(list),
   read: [asyncErrorBoundary(tableExists), asyncErrorBoundary(read)],
   update: asyncErrorBoundary(update),
+  updateTableStatus: [
+    asyncErrorBoundary(tableExists),
+    asyncErrorBoundary(updateTableStatus),
+  ],
 };

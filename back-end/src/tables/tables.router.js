@@ -14,7 +14,7 @@ router.route("/new").post(controller.createTable).all(methodNotAllowed);
 //Route to update a table
 router
   .route("/:tableId/seat")
-  .delete(controller.update)
+  .delete(controller.updateTableStatus)
   .put(controller.update)
   .all(methodNotAllowed);
 

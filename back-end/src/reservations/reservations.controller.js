@@ -186,39 +186,14 @@ async function update(req, res, next) {
   res.json({ data: response });
 }
 
-//Make sure that the table has sufficient capacity
-async function validateCapacity(people, capacity, reservation_id, next) {
-  //Check that capacity is sufficient for the number of people
-  if (people > capacity || reservation_id !== null) {
-    console.log("400 error");
-    next({
-      status: 400,
-      message:
-        "The table must have sufficient capacity to seat the party and it must not be occupied.",
-    });
-  }
-}
-
 //Modify the table but make sure there is valid capacity first
 async function updateWithValidation(req, res, next) {
-  //Set the reservation (from reservationExists function)
-  let reservation = res.locals.reservation;
-  //Get the specific table based on the tableId in url
-  const table = await reservationsService.readTable(req.params.tableId);
-  console.log("tableCapacity", table.capacity);
-
-  validateCapacity(
-    reservation.people,
-    table.capacity,
-    table.reservation_id,
-    next
-  );
-
   //Update the reservation
   const response = await reservationsService.update(
     req.body.data,
     req.params.reservationId
   );
+  console.log("This is response", response);
   res.json({ data: response });
 }
 

@@ -4,7 +4,11 @@
 
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { listReservations, updateReservation, updateTable } from "../utils/api";
+import {
+  listReservations,
+  updateReservation,
+  updateTableStatus,
+} from "../utils/api";
 import { listTables } from "../utils/api";
 import SeatButton from "./SeatButton";
 import FinishButton from "./FinishButton";
@@ -119,7 +123,7 @@ function Dashboard({ date }) {
 
     //Make an api call to update the table's status
     async function changeTable(table) {
-      const response = await updateTable(table);
+      const response = await updateTableStatus(table);
       console.log(response);
     }
     changeTable(table);

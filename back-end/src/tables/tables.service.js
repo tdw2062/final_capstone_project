@@ -27,6 +27,15 @@ function update(updatedTable, tableId) {
     .then((updatedRecords) => updatedRecords[0]);
 }
 
+//Modify a given reservation by reservationId
+function updateReservation(updatedReservation, reservationId) {
+  return knex("reservations")
+    .select("*")
+    .where({ reservation_id: reservationId })
+    .update(updatedReservation, "*")
+    .then((updatedRecords) => updatedRecords[0]);
+}
+
 //Get one reservation by reservation_id
 function readReservation(reservation_id) {
   return knex("reservations").select("*").where({ reservation_id }).first();
@@ -38,4 +47,5 @@ module.exports = {
   read,
   readReservation,
   update,
+  updateReservation,
 };

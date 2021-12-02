@@ -16,7 +16,6 @@ async function listTables(req, res, next) {
 //List all of the reservations
 async function list(req, res, next) {
   //Get reservations filtered by the paramater in the query string (usually 'date')
-
   const params = req.query;
   console.log("params", params);
   if (params["date"]) {
@@ -131,6 +130,14 @@ async function create(req, res, next) {
       message: "The reservation_time did not pass validation.",
     });
   }
+
+  if (req.body.data.status && req.body.data.status !== "booked") {
+    next({
+      status: 400,
+      message: "The reservation_status cannot be seated or finished.",
+    });
+  }
+
   //Get the time and date from the request body
   let date = req.body.data.reservation_date;
   let time = req.body.data.reservation_time;
@@ -179,6 +186,59 @@ async function createTable(req, res, next) {
 }
 
 async function update(req, res, next) {
+  validateBody(req.body.data, next);
+  if (
+    !req.body.data.reservation_date ||
+    req.body.data.reservation_date.trim() === ""
+  ) {
+    next({
+      status: 400,
+      message: "The reservation_date did not pass validation.",
+    });
+  }
+  if (
+    !req.body.data.reservation_time ||
+    req.body.data.reservation_time.trim() === ""
+  ) {
+    next({
+      status: 400,
+      message: "The reservation_time did not pass validation.",
+    });
+  }
+  //Get the time and date from the request body
+  let date = req.body.data.reservation_date;
+  let time = req.body.data.reservation_time;
+  //Validate the time and date and then create a new reservation based on request body
+  if (date && time) validateDate(date, time, next);
+
+  const response = await reservationsService.update(
+    req.body.data,
+    req.params.reservationId
+  );
+  res.json({ data: response });
+}
+
+async function updateStatus(req, res, next) {
+  let status = res.locals.reservation.status;
+
+  if (
+    req.body.data.status !== "booked" &&
+    req.body.data.status !== "finished" &&
+    req.body.data.status !== "seated" &&
+    req.body.data.status !== "cancelled"
+  ) {
+    next({
+      status: 400,
+      message: "This reservation_status is unknown.",
+    });
+  }
+
+  if (status === "finished") {
+    next({
+      status: 400,
+      message: "A reservation with status finished cannot be changed.",
+    });
+  }
   const response = await reservationsService.update(
     req.body.data,
     req.params.reservationId
@@ -204,7 +264,11 @@ module.exports = {
   create: asyncErrorBoundary(create),
   createTable: asyncErrorBoundary(createTable),
   read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)],
-  update: asyncErrorBoundary(update),
+  update: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(update)],
+  updateStatus: [
+    asyncErrorBoundary(reservationExists),
+    asyncErrorBoundary(updateStatus),
+  ],
   updateWithValidation: [
     asyncErrorBoundary(reservationExists),
     asyncErrorBoundary(updateWithValidation),

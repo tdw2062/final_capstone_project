@@ -99,6 +99,17 @@ async function update(req, res, next) {
     next
   );
 
+  //Make sure the reservation is not already seated
+  if (reservation.status === "seated") {
+    next({
+      status: 400,
+      message: `The reservation_id is already seated.`,
+    });
+  }
+
+  let objUpdate = { status: "seated" };
+  await updateReservation(objUpdate, reservation.reservation_id);
+
   const response = await tablesService.update(
     req.body.data,
     req.params.tableId
@@ -145,9 +156,19 @@ async function updateTableStatus(req, res, next) {
   } else {
     requestBody = req.body.data;
   }
+
+  let objUpdate = { status: "finished" };
+  await updateReservation(objUpdate, record.reservation_id);
+
   //Update the table in the DB
   const response = await tablesService.update(requestBody, req.params.tableId);
   res.json({ data: response });
+}
+
+//Modify the table but make sure there is valid capacity first
+async function updateReservation(objUpdate, reservation_id) {
+  //Update the reservation
+  await tablesService.updateReservation(objUpdate, reservation_id);
 }
 
 module.exports = {

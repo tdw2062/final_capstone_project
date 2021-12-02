@@ -30,11 +30,15 @@ router
 //Route to update the status of a table
 router
   .route("/:reservationId/status")
-  .put(controller.update)
+  .put(controller.updateStatus)
   .all(methodNotAllowed);
 
 //Route to get a specific table
-router.route("/:reservationId").get(controller.read).all(methodNotAllowed);
+router
+  .route("/:reservationId")
+  .get(controller.read)
+  .put(controller.update)
+  .all(methodNotAllowed);
 
 //Route to list all tables or create a new table
 router

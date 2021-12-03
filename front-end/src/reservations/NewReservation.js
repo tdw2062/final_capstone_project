@@ -41,9 +41,14 @@ function NewReservation({ date }) {
   const [visibility2, setVisibility2] = useState(null);
   const [visibility3, setVisibility3] = useState(null);
 
+  //Create switched
+  let switched = null;
+
   //Create the handleSubmit function which creates a reservation based on the input and
   //makes an api call to add that reservation to the database
   const handleSubmit = (event) => {
+    switched = null;
+
     validate();
 
     event.preventDefault();
@@ -64,7 +69,10 @@ function NewReservation({ date }) {
     }
     newReservation(reservation);
 
-    document.location.href = `/dashboard?date=${reservationDate}`;
+    console.log("switched", switched);
+    if (!switched) {
+      document.location.href = `/dashboard?date=${reservationDate}`;
+    }
   };
 
   //The validate function ensures that the reservation is not in the past, on a Tuesday,
@@ -92,10 +100,12 @@ function NewReservation({ date }) {
 
     if (resDate.valueOf() < today.valueOf()) {
       setVisibility(true);
+      switched = true;
     }
 
     if (resDate.getDay() === 2) {
       setVisibility2(true);
+      switched = true;
     }
 
     if (
@@ -103,6 +113,7 @@ function NewReservation({ date }) {
       (resDate.getHours() === 9 && resDate.getMinutes() < 30)
     ) {
       setVisibility3(true);
+      switched = true;
     }
 
     if (
@@ -110,6 +121,7 @@ function NewReservation({ date }) {
       (resDate.getHours() === 21 && resDate.getMinutes() > 30)
     ) {
       setVisibility3(true);
+      switched = true;
     }
   };
 

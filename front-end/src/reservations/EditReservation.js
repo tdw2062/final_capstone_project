@@ -49,10 +49,18 @@ function EditReservation({ date }) {
   useEffect(() => {
     async function getReservation(reservationId) {
       const response = await readReservation(reservationId);
+
+      console.log(
+        "date looks like",
+        response.reservation_date,
+        typeof reservation_date
+      );
+      let dateString = response.reservation_date.substring(0, 10);
+
       setFirstName(response.first_name);
       setLastName(response.last_name);
       setMobileNumber(response.mobile_number);
-      setReservationDate(response.reservation_date);
+      setReservationDate(dateString);
       setReservationTime(response.reservation_time);
       setPeople(response.people);
       setStatus(response.status);
@@ -64,6 +72,7 @@ function EditReservation({ date }) {
   //This function creates a reservation based on the user input and then uses changeReservation() api call
   const handleSubmit = (event) => {
     event.preventDefault();
+    console.log("submit pressed");
 
     if (status !== "booked") {
       setVisibility(true);

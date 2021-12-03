@@ -64,7 +64,7 @@ function NewReservation({ date }) {
     }
     newReservation(reservation);
 
-    //document.location.href = "/reservations/new";
+    document.location.href = `/dashboard?date=${reservationDate}`;
   };
 
   //The validate function ensures that the reservation is not in the past, on a Tuesday,

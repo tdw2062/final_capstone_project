@@ -23,10 +23,11 @@ async function list(req, res, next) {
     delete params["date"];
   }
   const response = await reservationsService.list(params);
-  console.log("initial response", response);
+  console.log("entire list with params", response);
+
   //Only return reservations with a status of 'finished'
   const data = response.filter((obj) => obj.status !== "finished");
-  console.log("filtered response", data);
+
   res.json({ data });
 }
 
@@ -150,6 +151,10 @@ async function create(req, res, next) {
 
 //Make sure that the reservation date is not in the past, is not a Tuesday, and is not before 10AM or after 9:30PM
 async function validateBody(body, next) {
+  //Convert people into a number
+  const people = null;
+  if (body.people) people = Number(body.people);
+
   console.log("Request body received", body);
   if (!body || !body.first_name || body.first_name.trim() === "") {
     next({
@@ -168,9 +173,9 @@ async function validateBody(body, next) {
     });
   } else if (
     !body.people ||
-    body.people === 0 ||
-    isNaN(body.people) ||
-    typeof body.people === "string"
+    people === 0 ||
+    isNaN(people) ||
+    typeof people === "string"
   ) {
     next({
       status: 400,
@@ -186,6 +191,7 @@ async function createTable(req, res, next) {
 }
 
 async function update(req, res, next) {
+  console.log("update attempt");
   validateBody(req.body.data, next);
   if (
     !req.body.data.reservation_date ||
@@ -220,7 +226,7 @@ async function update(req, res, next) {
 
 async function updateStatus(req, res, next) {
   let status = res.locals.reservation.status;
-
+  console.log("original status", status);
   if (
     req.body.data.status !== "booked" &&
     req.body.data.status !== "finished" &&
@@ -243,6 +249,7 @@ async function updateStatus(req, res, next) {
     req.body.data,
     req.params.reservationId
   );
+  console.log("This is the response", response);
   res.json({ data: response });
 }
 

@@ -84,18 +84,6 @@ function Seat({ date }) {
   async function handleSubmit(event) {
     event.preventDefault();
     validate();
-    let reservation = {
-      data: {},
-    };
-
-    reservation.data.reservation_id = reservationId;
-    reservation.data.status = "seated";
-
-    async function changeReservation(reservation, tableId) {
-      const response = await updateReservationWithTableId(reservation, tableId);
-      console.log(response);
-    }
-    await changeReservation(reservation, tableId);
 
     let table = {
       data: {},
@@ -107,11 +95,11 @@ function Seat({ date }) {
 
     async function changeTable(table) {
       const response = await updateTable(table);
-      console.log(response);
+      console.log("updateTable response", response);
     }
     await changeTable(table);
 
-    //document.location.href = "/dashboard";
+    document.location.href = "/dashboard";
   }
 
   //The validate function is used by the handleSubmit function to make sure

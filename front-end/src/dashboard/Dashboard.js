@@ -7,6 +7,7 @@ import { Link, useParams } from "react-router-dom";
 import {
   listReservations,
   updateReservation,
+  updateReservationStatus,
   updateTableStatus,
 } from "../utils/api";
 import { listTables } from "../utils/api";
@@ -41,27 +42,28 @@ function Dashboard({ date }) {
 
   //Extract the year, month, and day from the date passed in and use it to
   //create a date that can be incremented and decremented
-  let month = Number(date.substring(5, 7));
+  let month = Number(date.substring(5, 7)) - 1;
   let day = Number(date.substring(8, 10));
   let year = Number(date.substring(0, 4));
+  console.log("month", month, "day", day, "year", year);
 
   let currDate = new Date(year, month, day);
+  console.log("currDate", currDate);
   let prevDate = currDate.addDays(-1);
-
+  let prevDateDay = prevDate.getDate();
+  if (prevDateDay < 10) prevDateDay = "0" + prevDateDay;
+  let prevDateMonth = prevDate.getMonth() + 1;
+  if (prevDateMonth < 10) prevDateMonth = "0" + prevDateMonth;
   let prevDateString =
-    prevDate.getFullYear() +
-    "-" +
-    prevDate.getMonth() +
-    "-" +
-    prevDate.getDate();
+    prevDate.getFullYear() + "-" + prevDateMonth + "-" + prevDateDay;
   console.log("prevDateString", prevDateString);
   let nextDate = currDate.addDays(1);
+  let nextDateDay = nextDate.getDate();
+  if (nextDateDay < 10) nextDateDay = "0" + nextDateDay;
+  let nextDateMonth = nextDate.getMonth() + 1;
+  if (nextDateMonth < 10) nextDateMonth = "0" + nextDateMonth;
   let nextDateString =
-    nextDate.getFullYear() +
-    "-" +
-    nextDate.getMonth() +
-    "-" +
-    nextDate.getDate();
+    nextDate.getFullYear() + "-" + nextDateMonth + "-" + nextDateDay;
   console.log("nextDateString", nextDateString);
 
   //Use useEffect to load the reservations and the tables
@@ -147,7 +149,7 @@ function Dashboard({ date }) {
 
     //Make an api call to update the status of the reservation
     async function changeReservation(reservation) {
-      const response = await updateReservation(reservation);
+      const response = await updateReservationStatus(reservation);
       console.log("response", response);
     }
     changeReservation(reservation);
@@ -200,6 +202,7 @@ function Dashboard({ date }) {
 
     return (
       <tr>
+        <td>{table.table_id}</td>
         <td>{table.table_name}</td>
         <td>{table.capacity}</td>
         <td>{table.reservation_id}</td>
@@ -261,6 +264,7 @@ function Dashboard({ date }) {
       <h1>Tables for Seating</h1>
       <table>
         <tr>
+          <th>Table ID</th>
           <th>Table Name</th>
           <th>Capacity</th>
           <th>Reservation ID</th>

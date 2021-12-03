@@ -58,7 +58,7 @@ async function tableExists(req, res, next) {
 //List all of the tables
 async function list(req, res, next) {
   const data = await tablesService.list();
-
+  console.log("list of tables", data);
   res.json({ data });
 }
 
@@ -81,6 +81,8 @@ async function update(req, res, next) {
   const reservation = await tablesService.readReservation(
     req.body.data.reservation_id
   );
+  console.log("reservation before update", reservation);
+
   if (!reservation) {
     next({
       status: 404,
@@ -90,7 +92,7 @@ async function update(req, res, next) {
 
   //Grab the table to run validateCapacity
   const table = await tablesService.read(req.params.tableId);
-  console.log("tableId", table.table_id);
+  console.log("table before update", table);
 
   validateCapacity(
     reservation.people,

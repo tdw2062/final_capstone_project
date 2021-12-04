@@ -109,8 +109,8 @@ function NewReservation({ date }) {
     }
 
     if (
-      resDate.getHours() < 9 ||
-      (resDate.getHours() === 9 && resDate.getMinutes() < 30)
+      resDate.getHours() < 10 ||
+      (resDate.getHours() === 10 && resDate.getMinutes() < 30)
     ) {
       setVisibility3(true);
       switched = true;

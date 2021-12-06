@@ -35,12 +35,12 @@ function Search({ date }) {
       <h1>Find Reservations</h1>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="phone_number">Enter a Customer Phone Number</label>
+          <label htmlFor="mobile_number">Enter a Customer Phone Number</label>
           <input
             type="text"
-            name="phone_number"
+            name="mobile_number"
             className="form-control"
-            id="phone_number"
+            id="mobile_number"
             onChange={handlePhoneNumberChange}
             value={phoneNumber}
           />

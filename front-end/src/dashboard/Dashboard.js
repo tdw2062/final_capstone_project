@@ -114,12 +114,12 @@ function Dashboard({ date }) {
     console.log("table", table);
 
     //Make an api call to update the reservation's status
+
     async function changeReservation(reservation) {
       console.log("updatedReservation");
-      const response = await updateReservation(reservation);
+      const response = await updateReservationStatus(reservation);
       console.log("response", response);
     }
-
     console.log("reservationId", reservationId);
     if (reservationId !== null) changeReservation(reservation);
 
@@ -130,7 +130,8 @@ function Dashboard({ date }) {
     }
     changeTable(table);
 
-    document.location.href = "/dashboard";
+    location.reload();
+    //document.location.href = "/dashboard";
   }
 
   //Create a handleCancel function to cancel a reservation
@@ -207,7 +208,7 @@ function Dashboard({ date }) {
         <td>{table.capacity}</td>
         <td>{table.reservation_id}</td>
         <td data-table-id-status={table.table_id}>
-          {table.reservation_id === null ? "Free" : "Occupied"}
+          {table.reservation_id === null ? "free" : "occupied"}
         </td>
         <FinishButton
           visibility={visible}

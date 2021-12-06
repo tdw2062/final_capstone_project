@@ -9,6 +9,7 @@ const tablesService = require("./tables.service.js");
 //Make sure that the reservation date is not in the past, is not a Tuesday, and is not before 10AM or after 9:30PM
 async function validateBody(body, next) {
   console.log("Request body received", body);
+
   if (
     !body ||
     !body.table_name ||
@@ -25,6 +26,7 @@ async function validateBody(body, next) {
     isNaN(body.capacity) ||
     typeof body.capacity === "string"
   ) {
+    console.log("Capacity was failed");
     next({
       status: 400,
       message: "The capacity did not pass validation.",

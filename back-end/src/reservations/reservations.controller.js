@@ -152,7 +152,7 @@ async function create(req, res, next) {
 //Make sure that the reservation date is not in the past, is not a Tuesday, and is not before 10AM or after 9:30PM
 async function validateBody(body, next) {
   //Convert people into a number
-  const people = null;
+  let people = null;
   if (body.people) people = Number(body.people);
 
   console.log("Request body received", body);

@@ -27,24 +27,24 @@ function AddTable({ date }) {
     };
 
     table.data.table_name = tableName;
-    table.data.capacity = capacity;
+    table.data.capacity = Number(capacity);
 
     console.log("submit table", table);
 
     //Make an api call to post the new table to the db
     async function newTable(table) {
       const response = await createTable(table);
+      if (response) document.location.href = `/dashboard`;
     }
-    newTable(table);
 
-    document.location.href = "/tables/new";
+    newTable(table);
   };
 
   //Create the handleCancel function to cancel and return to the homepage
   const handleCancel = (event) => {
     console.log("we here");
     event.preventDefault();
-    document.location.href = "/dashboard";
+    window.history.back();
   };
 
   //Return the html with inputs for entering the tableName and capacity

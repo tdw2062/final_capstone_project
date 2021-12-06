@@ -73,7 +73,7 @@ function Seat({ date }) {
   //Create table rows from the tables state array and use to populate the drop-down
   const tableLinks = tables.map((table) => (
     <option value={table.table_id}>
-      {table.table_name} - capacity {table.capacity}
+      {table.table_name} - {table.capacity}
     </option>
   ));
 
@@ -137,8 +137,8 @@ function Seat({ date }) {
         <label for="exampleFormControlSelect1">Choose Table</label>
         <select
           class="form-control"
-          id="tableSeat"
-          name="tableSeat"
+          id="table_id"
+          name="table_id"
           onChange={handleTableIdChange}
           value={tableId}
         >

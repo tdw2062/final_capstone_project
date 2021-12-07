@@ -3,27 +3,7 @@
 
 import React, { useEffect, useState } from "react";
 
-import { listReservations } from "../utils/api";
-
-function SearchResults({ visibility, phoneNumber }) {
-  //UseEffect is used to get the reservations
-  useEffect(loadDashboard, [phoneNumber]);
-  const [reservations, setReservations] = useState([]);
-  const [reservationsError, setReservationsError] = useState(null);
-
-  //Load all of the reservations filtered by phone number
-  function loadDashboard() {
-    const abortController = new AbortController();
-    setReservationsError(null);
-    const mobile_number = phoneNumber;
-    console.log("mobile_number before api", mobile_number);
-    listReservations({ mobile_number }, abortController.signal)
-      .then(setReservations)
-      .catch(setReservationsError);
-    console.log("reservationsFound", reservations);
-    return () => abortController.abort();
-  }
-
+function SearchResults({ visibility, phoneNumber, reservations }) {
   //Create table rows of the reservations to display in the search results
   //Use the reservations state array to create the arrows.
   const reservationLinks = reservations.map((reservation) => (

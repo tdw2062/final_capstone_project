@@ -93,7 +93,7 @@ function Dashboard({ date }) {
 
   //Create the handleFinish function to finish a table
   //This function changes the status of a reservation to 'finished' and the status of table to 'free'
-  function handleFinish(reservationId, tableId) {
+  async function handleFinish(reservationId, tableId) {
     //Create a reservation object with a reservation_id and set the status to 'finished'
     console.log("reservationId", reservationId);
     let reservation = {
@@ -128,10 +128,9 @@ function Dashboard({ date }) {
       const response = await updateTableStatus(table);
       console.log(response);
     }
-    changeTable(table);
-
-    location.reload();
-    //document.location.href = "/dashboard";
+    await changeTable(table);
+    loadTables();
+    loadDashboard();
   }
 
   //Create a handleCancel function to cancel a reservation

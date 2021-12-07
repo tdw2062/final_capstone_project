@@ -74,8 +74,8 @@ function Dashboard({ date }) {
   function loadDashboard() {
     const abortController = new AbortController();
     setReservationsError(null);
-    const reservation_date = date;
-    listReservations({ reservation_date }, abortController.signal)
+
+    listReservations({ date }, abortController.signal)
       .then(setReservations)
       .catch(setReservationsError);
     return () => abortController.abort();
@@ -135,7 +135,7 @@ function Dashboard({ date }) {
 
   //Create a handleCancel function to cancel a reservation
   //This function sets a reservation's status to cancelled
-  function handleCancel(reservationId) {
+  async function handleCancel(reservationId) {
     //Create a reservation object with a reservation_id and set the status to cancelled
     console.log("reservationId", reservationId);
 
@@ -152,9 +152,9 @@ function Dashboard({ date }) {
       const response = await updateReservationStatus(reservation);
       console.log("response", response);
     }
-    changeReservation(reservation);
-
-    document.location.href = "/dashboard";
+    await changeReservation(reservation);
+    loadDashboard();
+    //document.location.href = "/dashboard";
   }
 
   //Create table rows using the 'reservations' state array

@@ -16,7 +16,6 @@ function CancelButton({ visibility, handleCancel, reservationId }) {
     ) {
       handleCancel(reservationId);
     } else {
-      document.location.href = "/dashboard";
     }
   };
   console.log("value of visibility", visibility);

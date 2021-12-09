@@ -34,7 +34,7 @@ function NewReservation({ date }) {
     setReservationTime(event.target.value);
 
   const [people, setPeople] = useState("");
-  const handlePeopleChange = (event) => setPeople(event.target.value);
+  const handlePeopleChange = (event) => setPeople(Number(event.target.value));
 
   //Set visibility for the different types of errors that can occur
   const [visibility, setVisibility] = useState(null);

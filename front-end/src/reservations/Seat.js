@@ -33,14 +33,18 @@ function Seat({ date }) {
   //The handleTableIdChange function is called whenever the value for the table drop-down is changed
   //This function sets the table_id, capacity, and occupied status of the table
   function handleTableIdChange(event) {
+    console.log("tableIdBefore", tableId);
     setTableId(event.target.value);
+    console.log("tableIdAfter", tableId);
 
     async function getTable(table_id) {
       const response = await readTable(table_id);
+      console.log("tableResponse", response);
       setCapacity(response.capacity);
       setOccupied(response.reservation_id);
       console.log("tableCapacity", capacity);
     }
+    console.log("valueSelected", event.target.value);
     getTable(event.target.value);
   }
 
@@ -82,6 +86,9 @@ function Seat({ date }) {
   //changes the reservation_id on the table to match the party's reservation_id
   //so that the table is "occupied"
   async function handleSubmit(event) {
+    console.log("showMeTables", tables);
+    console.log("showMeTableId", tableId);
+    //console.log("showMeLinks", tableLinks);
     event.preventDefault();
     validate();
 
@@ -99,7 +106,7 @@ function Seat({ date }) {
     }
     await changeTable(table);
 
-    document.location.href = "/dashboard";
+    // window.history.back();
   }
 
   //The validate function is used by the handleSubmit function to make sure
@@ -125,7 +132,7 @@ function Seat({ date }) {
 
   //Create the handleCancel function to return the user to the reservations page
   const handleCancel = (event) => {
-    document.location.href = `/reservations`;
+    window.history.back();
   };
 
   //Return the drop-down and the submit button to allow a user to seat a party at a table
@@ -142,7 +149,7 @@ function Seat({ date }) {
           onChange={handleTableIdChange}
           value={tableId}
         >
-          <option value="">--Select an Option--</option>
+          <option value="first_option">--Select an Option--</option>
           {tableLinks}
         </select>
       </div>

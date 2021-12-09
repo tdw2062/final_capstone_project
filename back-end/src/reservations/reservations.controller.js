@@ -150,10 +150,8 @@ async function create(req, res, next) {
 }
 
 //Make sure that the reservation date is not in the past, is not a Tuesday, and is not before 10AM or after 9:30PM
-async function validateBody(body, next) {
+async function validateBody(body = {}, next) {
   //Convert people into a number
-  let people = null;
-  if (body.people) people = Number(body.people);
 
   console.log("Request body received", body);
   if (!body || !body.first_name || body.first_name.trim() === "") {
@@ -173,9 +171,8 @@ async function validateBody(body, next) {
     });
   } else if (
     !body.people ||
-    people === 0 ||
-    isNaN(people) ||
-    typeof people === "string"
+    body.people === 0 ||
+    typeof body.people !== "number"
   ) {
     next({
       status: 400,

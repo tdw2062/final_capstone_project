@@ -18,6 +18,7 @@ function AddTable({ date }) {
 
   //The handleSubmit function creates a new table and posts it to the db
   const handleSubmit = (event) => {
+    console.log("helloThereGuy");
     event.preventDefault();
 
     //Create a table object and set its name and capacity according to the
@@ -29,20 +30,21 @@ function AddTable({ date }) {
     table.data.table_name = tableName;
     table.data.capacity = Number(capacity);
 
-    console.log("submit table", table);
+    // console.log("submit table", table);
 
     //Make an api call to post the new table to the db
     async function newTable(table) {
       const response = await createTable(table);
-      if (response) document.location.href = `/dashboard`;
+      //if (response) document.location.href = `/dashboard`;
     }
 
     newTable(table);
+    // console.log("WeAreDone");
   };
 
   //Create the handleCancel function to cancel and return to the homepage
   const handleCancel = (event) => {
-    console.log("we here");
+    //console.log("we here");
     event.preventDefault();
     window.history.back();
   };

@@ -71,6 +71,10 @@ async function read(req, res, next) {
 
 //Update a table, first making sure that reservation_id is not null (the table is occupied)
 async function update(req, res, next) {
+  const data = await tablesService.list();
+  console.log("tables fullList", data);
+  console.log("seatRequestData", req.body.data);
+
   //Make sure a reservation_id is present
   if (!req.body.data || !req.body.data.reservation_id) {
     next({

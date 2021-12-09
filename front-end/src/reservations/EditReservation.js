@@ -35,7 +35,7 @@ function EditReservation({ date }) {
     setReservationTime(event.target.value);
 
   const [people, setPeople] = useState("");
-  const handlePeopleChange = (event) => setPeople(event.target.value);
+  const handlePeopleChange = (event) => setPeople(Number(event.target.value));
 
   const [status, setStatus] = useState("");
   const handleStatusChange = (event) => setStatus(event.target.value);
@@ -105,7 +105,7 @@ function EditReservation({ date }) {
       setPeople("");
       setStatus("");
 
-      //document.location.href = "/";
+      document.location.href = `/dashboard?date=${reservationDate}`;
     }
   };
 

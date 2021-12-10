@@ -148,8 +148,9 @@ async function validateCapacity(people, capacity, reservation_id, next) {
 }
 
 async function updateTableStatus(req, res, next) {
-  const data = await tablesService.list();
-  console.log("list of tables", data);
+  //This messes up the program
+  // const data = await tablesService.list();
+  //console.log("list of tables", data);
 
   const record = res.locals.table;
   console.log("thisRecord", record);

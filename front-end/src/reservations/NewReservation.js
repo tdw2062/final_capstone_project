@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { createReservation } from "../utils/api";
 import { listReservations } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
@@ -41,6 +42,8 @@ function NewReservation({ date }) {
   const [visibility2, setVisibility2] = useState(null);
   const [visibility3, setVisibility3] = useState(null);
 
+  const history = useHistory();
+
   //Create switched
   let switched = null;
 
@@ -71,7 +74,7 @@ function NewReservation({ date }) {
 
     console.log("switched", switched);
     if (!switched) {
-      document.location.href = `/dashboard?date=${reservationDate}`;
+      history.push(`/dashboard?date=${reservationDate}`);
     }
   };
 
@@ -129,7 +132,7 @@ function NewReservation({ date }) {
   const handleCancel = (event) => {
     console.log("we here");
     event.preventDefault();
-    document.location.href = "/dashboard";
+    history.push("/dashboard");
   };
 
   //Return the form with inputs to create a new reservation

@@ -8,7 +8,7 @@ import {
   readReservation,
   readTable,
 } from "../utils/api";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import ErrorAlert from "../layout/ErrorAlert";
 import CapacityError from "./CapacityError";
 import OccupiedError from "./OccupiedError";
@@ -29,6 +29,9 @@ function Seat({ date }) {
   const [capacity, setCapacity] = useState(null);
   const [people, setPeople] = useState(null);
   const [occupied, setOccupied] = useState(null);
+
+  //history hook
+  const history = useHistory();
 
   //The handleTableIdChange function is called whenever the value for the table drop-down is changed
   //This function sets the table_id, capacity, and occupied status of the table
@@ -106,7 +109,7 @@ function Seat({ date }) {
     }
     await changeTable(table);
 
-    // window.history.back();
+    history.push("/dashboard");
   }
 
   //The validate function is used by the handleSubmit function to make sure
@@ -149,7 +152,7 @@ function Seat({ date }) {
           onChange={handleTableIdChange}
           value={tableId}
         >
-          <option value="first_option">--Select an Option--</option>
+          <option value="">--Select an Option--</option>
           {tableLinks}
         </select>
       </div>

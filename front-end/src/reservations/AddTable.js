@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { createTable } from "../utils/api";
+import { useHistory } from "react-router-dom";
 import ErrorAlert from "../layout/ErrorAlert";
 
 /**
@@ -15,6 +16,8 @@ function AddTable({ date }) {
 
   const [capacity, setCapacity] = useState("");
   const handleCapacityChange = (event) => setCapacity(event.target.value);
+
+  const history = useHistory();
 
   //The handleSubmit function creates a new table and posts it to the db
   const handleSubmit = (event) => {
@@ -35,7 +38,7 @@ function AddTable({ date }) {
     //Make an api call to post the new table to the db
     async function newTable(table) {
       const response = await createTable(table);
-      //if (response) document.location.href = `/dashboard`;
+      if (response) history.push("/dashboard");
     }
 
     newTable(table);

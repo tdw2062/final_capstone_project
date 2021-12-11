@@ -3,7 +3,7 @@
 //tables and allow the user to finish the tables
 
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useHistory } from "react-router-dom";
 import {
   listReservations,
   updateReservation,
@@ -30,6 +30,7 @@ function Dashboard({ date }) {
   const [reservationsError, setReservationsError] = useState(null);
   const [tables, setTables] = useState([]);
   const [tablesError, setTablesError] = useState(null);
+  const history = useHistory();
 
   //Create the functionality for the prev, today, and next buttons to toggle dates
 
@@ -154,7 +155,6 @@ function Dashboard({ date }) {
     }
     await changeReservation(reservation);
     loadDashboard();
-    //document.location.href = "/dashboard";
   }
 
   //Create table rows using the 'reservations' state array

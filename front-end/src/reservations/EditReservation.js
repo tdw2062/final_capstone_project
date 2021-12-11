@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import {
   listReservations,
   readReservation,
@@ -44,6 +44,8 @@ function EditReservation({ date }) {
 
   //Get ReservationId from url
   const { reservationId } = useParams();
+
+  const history = useHistory();
 
   //Make an API Call to get the reservation based on the reservation_id
   useEffect(() => {
@@ -105,7 +107,7 @@ function EditReservation({ date }) {
       setPeople("");
       setStatus("");
 
-      document.location.href = `/dashboard?date=${reservationDate}`;
+      history.push(`/dashboard?date=${reservationDate}`);
     }
   };
 

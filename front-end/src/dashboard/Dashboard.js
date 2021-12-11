@@ -73,6 +73,7 @@ function Dashboard({ date }) {
   useEffect(loadDashboard, [date]);
 
   function loadDashboard() {
+    console.log("Load Tables");
     const abortController = new AbortController();
     setReservationsError(null);
 

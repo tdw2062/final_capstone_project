@@ -72,7 +72,7 @@ function EditReservation({ date }) {
 
   //Create the handleSubmit function to update the deck
   //This function creates a reservation based on the user input and then uses changeReservation() api call
-  const handleSubmit = (event) => {
+  async function handleSubmit(event) {
     event.preventDefault();
     console.log("submit pressed");
 
@@ -97,7 +97,7 @@ function EditReservation({ date }) {
         const response = await updateReservation(reservation);
         console.log(response);
       }
-      changeReservation(reservation);
+      await changeReservation(reservation);
 
       setFirstName("");
       setLastName("");
@@ -109,11 +109,11 @@ function EditReservation({ date }) {
 
       history.push(`/dashboard?date=${reservationDate}`);
     }
-  };
+  }
 
-  //Create the handleCancel function to return the user to the deck page
+  //Create the handleCancel function to return the user to the previous page
   const handleCancel = (event) => {
-    window.history.back();
+    history.push(`/dashboard?date=${reservationDate}`);
   };
 
   //Return the form to enter the reservation details

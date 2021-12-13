@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { createReservation } from "../utils/api";
-import { listReservations } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
-import { today } from "../utils/date-time";
 import PastDateError from "./PastDateError";
 import TuesdayError from "./TuesdayError";
 import TimeError from "./TimeError";
@@ -42,6 +40,7 @@ function NewReservation({ date }) {
   const [visibility2, setVisibility2] = useState(null);
   const [visibility3, setVisibility3] = useState(null);
 
+  //Create instance of useHistory hook
   const history = useHistory();
 
   //Create switched
@@ -52,6 +51,7 @@ function NewReservation({ date }) {
   const handleSubmit = (event) => {
     switched = null;
 
+    //Validate the input
     validate();
 
     event.preventDefault();
@@ -59,20 +59,21 @@ function NewReservation({ date }) {
       data: {},
     };
 
+    //Set state variables
     reservation.data.first_name = firstName;
     reservation.data.last_name = lastName;
     reservation.data.mobile_number = mobileNumber;
     reservation.data.reservation_date = reservationDate;
     reservation.data.reservation_time = reservationTime;
     reservation.data.people = people;
-    console.log("submit reservation", reservation);
 
+    //Make api call to create a new reservation
     async function newReservation(reservation) {
       const response = await createReservation(reservation);
     }
     newReservation(reservation);
 
-    console.log("switched", switched);
+    //If the api call was successful, go back to the dashboard
     if (!switched) {
       history.push(`/dashboard?date=${reservationDate}`);
     }
@@ -93,24 +94,26 @@ function NewReservation({ date }) {
     let hours = Number(reservationTime.substring(0, 2));
     let minutes = Number(reservationTime.substring(3));
 
+    //Compare the current date with the date of the reservation entered
     let resDate = new Date(year, month, day);
     resDate.setHours(hours);
     resDate.setMinutes(minutes);
 
     let today = new Date();
-    console.log("today", today);
-    console.log("resDate", resDate);
 
+    //If the current date is greater than the reservation date, throw an error
     if (resDate.valueOf() < today.valueOf()) {
       setVisibility(true);
       switched = true;
     }
 
+    //If the reservation is made on a Tuesday, throw an error
     if (resDate.getDay() === 2) {
       setVisibility2(true);
       switched = true;
     }
 
+    //If the reservation is earlier than 10:30am or later than 9:30pm, throw an error
     if (
       resDate.getHours() < 10 ||
       (resDate.getHours() === 10 && resDate.getMinutes() < 30)
@@ -130,7 +133,6 @@ function NewReservation({ date }) {
 
   //Create the handleCancel function to cancel and return to the homepage1
   const handleCancel = (event) => {
-    console.log("we here");
     event.preventDefault();
     history.push("/dashboard");
   };

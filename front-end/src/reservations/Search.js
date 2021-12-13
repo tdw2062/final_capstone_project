@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import SearchResults from "./SearchResults";
 import { listReservations } from "../utils/api";
-import { createTable } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 
 /**
@@ -26,11 +25,10 @@ function Search({ date }) {
     const abortController = new AbortController();
     setReservationsError(null);
     const mobile_number = phoneNumber;
-    console.log("mobile_number before api", mobile_number);
+
     listReservations({ mobile_number }, abortController.signal)
       .then(setReservations)
       .catch(setReservationsError);
-    console.log("reservationsFound", reservations);
     return () => abortController.abort();
   }
 
@@ -39,12 +37,10 @@ function Search({ date }) {
     event.preventDefault();
     loadDashboard();
     setVisibilityStatus(true);
-    console.log("phoneNumber", phoneNumber);
   };
 
   //Create the handleCancel function to cancel and return to the homepage1
   const handleCancel = (event) => {
-    console.log("we here");
     event.preventDefault();
   };
 

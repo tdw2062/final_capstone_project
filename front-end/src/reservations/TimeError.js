@@ -2,7 +2,7 @@
 //The TimeError appears on the NewReservation Component
 //The sole prop is visibility3
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 function TimeError({ visibility3 }) {
   if (visibility3 !== null) {

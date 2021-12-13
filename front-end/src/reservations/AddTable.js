@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { createTable } from "../utils/api";
 import { useHistory } from "react-router-dom";
 import ErrorAlert from "../layout/ErrorAlert";
@@ -17,6 +17,7 @@ function AddTable({ date }) {
   const [capacity, setCapacity] = useState("");
   const handleCapacityChange = (event) => setCapacity(event.target.value);
 
+  //Create instance of useHistory hook
   const history = useHistory();
 
   //The handleSubmit function creates a new table and posts it to the db
@@ -33,8 +34,6 @@ function AddTable({ date }) {
     table.data.table_name = tableName;
     table.data.capacity = Number(capacity);
 
-    // console.log("submit table", table);
-
     //Make an api call to post the new table to the db
     async function newTable(table) {
       const response = await createTable(table);
@@ -42,12 +41,10 @@ function AddTable({ date }) {
     }
 
     newTable(table);
-    // console.log("WeAreDone");
   };
 
   //Create the handleCancel function to cancel and return to the homepage
   const handleCancel = (event) => {
-    //console.log("we here");
     event.preventDefault();
     window.history.back();
   };

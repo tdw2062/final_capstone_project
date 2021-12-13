@@ -61,25 +61,25 @@ async function fetchJson(url, options, onCancel) {
  *  a promise that resolves to a possibly empty array of reservation saved in the database.
  */
 
+//Returns a list of reservations filtered by a given parameter
 export async function listReservations(params, signal) {
-  console.log("helloThere", params);
-
   const url = new URL(`${API_BASE_URL}/reservations`);
   Object.entries(params).forEach(([key, value]) =>
     url.searchParams.append(key, value.toString())
   );
-  console.log("urlSearchParams", url);
 
   return await fetchJson(url, { headers, signal }, [])
     .then(formatReservationDate)
     .then(formatReservationTime);
 }
 
+//Returns a list of tables
 export async function listTables(signal) {
   const url = new URL(`${API_BASE_URL}/tables`);
   return await fetchJson(url, { headers, signal }, []);
 }
 
+//Creates a reservation
 export async function createReservation(reservation, signal) {
   const url = `${API_BASE_URL}/reservations`;
   const options = {
@@ -88,10 +88,11 @@ export async function createReservation(reservation, signal) {
     body: JSON.stringify(reservation),
     signal,
   };
-  console.log("url to use", url, "options", options);
+
   return await fetchJson(url, options, {});
 }
 
+//Creates a table
 export async function createTable(table, signal) {
   const url = `${API_BASE_URL}/tables/new`;
   const options = {
@@ -104,18 +105,21 @@ export async function createTable(table, signal) {
   return await fetchJson(url, options, {});
 }
 
+//Gets one specific reservation by reservation_id
 export async function readReservation(reservationId, signal) {
   console.log("hello");
   const url = `${API_BASE_URL}/reservations/${reservationId}`;
   return await fetchJson(url, { signal }, {});
 }
 
+//Gets one specific table by table_id
 export async function readTable(tableId, signal) {
   console.log("helloTable");
   const url = `${API_BASE_URL}/tables/${tableId}`;
   return await fetchJson(url, { signal }, {});
 }
 
+//Updates a reservation
 export async function updateReservation(updatedReservation, signal) {
   const url = `${API_BASE_URL}/reservations/${updatedReservation.data.reservation_id}/edit`;
   const options = {
@@ -127,6 +131,7 @@ export async function updateReservation(updatedReservation, signal) {
   return await fetchJson(url, options, updatedReservation);
 }
 
+//Updates the status of a reservation
 export async function updateReservationStatus(updatedReservation, signal) {
   const url = `${API_BASE_URL}/reservations/${updatedReservation.data.reservation_id}/status`;
   const options = {
@@ -138,6 +143,7 @@ export async function updateReservationStatus(updatedReservation, signal) {
   return await fetchJson(url, options, updatedReservation);
 }
 
+/*
 export async function updateReservationWithTableId(
   updatedReservation,
   tableId,
@@ -151,8 +157,9 @@ export async function updateReservationWithTableId(
     signal,
   };
   return await fetchJson(url, options, updatedReservation);
-}
+}*/
 
+//Updates a table
 export async function updateTable(updatedTable, signal) {
   const url = `${API_BASE_URL}/tables/${updatedTable.data.table_id}/seat`;
   const options = {
@@ -164,6 +171,7 @@ export async function updateTable(updatedTable, signal) {
   return await fetchJson(url, options, updatedTable);
 }
 
+//Updates the status of a table
 export async function updateTableStatus(updatedTable, signal) {
   const url = `${API_BASE_URL}/tables/${updatedTable.data.table_id}/seat`;
   const options = {

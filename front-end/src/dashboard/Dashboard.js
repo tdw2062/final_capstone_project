@@ -3,10 +3,9 @@
 //tables and allow the user to finish the tables
 
 import React, { useEffect, useState } from "react";
-import { Link, useParams, useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import {
   listReservations,
-  updateReservation,
   updateReservationStatus,
   updateTableStatus,
 } from "../utils/api";
@@ -23,17 +22,15 @@ import ErrorAlert from "../layout/ErrorAlert";
  * @returns {JSX.Element}
  */
 function Dashboard({ date }) {
-  console.log("reprint date", date);
-
   //The main state variables are reservations and tables which are arrays to be displayed
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
   const [tables, setTables] = useState([]);
   const [tablesError, setTablesError] = useState(null);
+  //Declare an instance of the useHistory hook
   const history = useHistory();
 
   //Create the functionality for the prev, today, and next buttons to toggle dates
-
   //Function to add a day to a date
   Date.prototype.addDays = function (days) {
     var date = new Date(this.valueOf());
@@ -46,10 +43,11 @@ function Dashboard({ date }) {
   let month = Number(date.substring(5, 7)) - 1;
   let day = Number(date.substring(8, 10));
   let year = Number(date.substring(0, 4));
-  console.log("month", month, "day", day, "year", year);
 
   let currDate = new Date(year, month, day);
-  console.log("currDate", currDate);
+
+  //For the prevDate and nextDate, convert the date to a text string
+  //Convert prevDate to a text string
   let prevDate = currDate.addDays(-1);
   let prevDateDay = prevDate.getDate();
   if (prevDateDay < 10) prevDateDay = "0" + prevDateDay;
@@ -57,7 +55,8 @@ function Dashboard({ date }) {
   if (prevDateMonth < 10) prevDateMonth = "0" + prevDateMonth;
   let prevDateString =
     prevDate.getFullYear() + "-" + prevDateMonth + "-" + prevDateDay;
-  console.log("prevDateString", prevDateString);
+
+  //Convert nextDate to a text string
   let nextDate = currDate.addDays(1);
   let nextDateDay = nextDate.getDate();
   if (nextDateDay < 10) nextDateDay = "0" + nextDateDay;
@@ -73,7 +72,6 @@ function Dashboard({ date }) {
   useEffect(loadDashboard, [date]);
 
   function loadDashboard() {
-    console.log("Load Tables");
     const abortController = new AbortController();
     setReservationsError(null);
 
@@ -104,7 +102,6 @@ function Dashboard({ date }) {
 
     reservation.data.reservation_id = reservationId;
     reservation.data.status = "finished";
-    console.log("reservation", reservation);
 
     //Create a table object with a table_id and set the reservation_id to null (which makes it 'free')
     let table = {
@@ -113,16 +110,12 @@ function Dashboard({ date }) {
 
     table.data.table_id = tableId;
     table.data.reservation_id = null;
-    console.log("table", table);
 
     //Make an api call to update the reservation's status
-
     async function changeReservation(reservation) {
-      console.log("updatedReservation");
       const response = await updateReservationStatus(reservation);
-      console.log("response", response);
     }
-    console.log("reservationId", reservationId);
+
     if (reservationId !== null) changeReservation(reservation);
 
     //Make an api call to update the table's status
@@ -131,6 +124,8 @@ function Dashboard({ date }) {
       console.log(response);
     }
     await changeTable(table);
+
+    //Reload reservations and tables
     loadTables();
     loadDashboard();
   }
@@ -139,26 +134,22 @@ function Dashboard({ date }) {
   //This function sets a reservation's status to cancelled
   async function handleCancel(reservationId) {
     //Create a reservation object with a reservation_id and set the status to cancelled
-    console.log("reservationId", reservationId);
-
     let reservation = {
       data: {},
     };
 
     reservation.data.reservation_id = reservationId;
     reservation.data.status = "cancelled";
-    console.log("reservation", reservation);
 
     //Make an api call to update the status of the reservation
     async function changeReservation(reservation) {
       const response = await updateReservationStatus(reservation);
-      console.log("response", response);
     }
     await changeReservation(reservation);
     loadDashboard();
   }
 
-  //Create table rows using the 'reservations' state array
+  //Create table rows of reservations using the 'reservations' state array
   const reservationLinks = reservations.map((reservation) => {
     let visible = reservation.status === "booked" ? true : null;
     let visible2 = reservation.status !== "cancelled" ? true : null;
@@ -197,7 +188,7 @@ function Dashboard({ date }) {
     );
   });
 
-  //Create table rows using the 'tables' state array
+  //Create table rows of tables using the 'tables' state array
   const tableLinks = tables.map((table) => {
     let visible = table.reservation_id ? true : null;
 

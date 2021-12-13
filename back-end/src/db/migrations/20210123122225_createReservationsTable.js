@@ -1,3 +1,4 @@
+//Create the reservations table
 exports.up = function (knex) {
   return knex.schema.createTable("reservations", (table) => {
     table.increments("reservation_id").primary(); // sets reservation_id as the primary key

@@ -2,13 +2,12 @@
 //The button will appear next to a table on the Dashboard
 //The four props are visibility, handleFinish, the reservationId, and the tableId
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useHistory } from "react-router-dom";
 
 function FinishButton({ visibility, handleFinish, reservationId, tableId }) {
   const history = useHistory();
 
-  console.log("value of visibility", visibility);
   const sendAlert = (event) => {
     event.preventDefault();
 

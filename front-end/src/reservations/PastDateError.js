@@ -2,7 +2,7 @@
 //The PastDateError on the NewReservation Component
 //The sole prop is visibility
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 function PastDateError({ visibility }) {
   if (visibility !== null) {

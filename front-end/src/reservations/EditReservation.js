@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
-import {
-  listReservations,
-  readReservation,
-  updateReservation,
-} from "../utils/api";
+import { readReservation, updateReservation } from "../utils/api";
 import StatusError from "./StatusError";
 import ErrorAlert from "../layout/ErrorAlert";
 
@@ -15,7 +11,7 @@ import ErrorAlert from "../layout/ErrorAlert";
  * @returns {JSX.Element}
  */
 function EditReservation({ date }) {
-  //Create name and description state variables and add event listeners
+  //Create state variables for each field of reservation and add event listeners
   const [firstName, setFirstName] = useState("");
   const handleFirstNameChange = (event) => setFirstName(event.target.value);
 
@@ -45,6 +41,7 @@ function EditReservation({ date }) {
   //Get ReservationId from url
   const { reservationId } = useParams();
 
+  //Create instance of useHistory hook
   const history = useHistory();
 
   //Make an API Call to get the reservation based on the reservation_id
@@ -52,11 +49,6 @@ function EditReservation({ date }) {
     async function getReservation(reservationId) {
       const response = await readReservation(reservationId);
 
-      console.log(
-        "date looks like",
-        response.reservation_date,
-        typeof reservation_date
-      );
       let dateString = response.reservation_date.substring(0, 10);
 
       setFirstName(response.first_name);
@@ -74,8 +66,8 @@ function EditReservation({ date }) {
   //This function creates a reservation based on the user input and then uses changeReservation() api call
   async function handleSubmit(event) {
     event.preventDefault();
-    console.log("submit pressed");
 
+    //If status is not equal to booked throw error otherwise edit reservation
     if (status !== "booked") {
       setVisibility(true);
     } else {
@@ -91,14 +83,15 @@ function EditReservation({ date }) {
       reservation.data.reservation_time = reservationTime;
       reservation.data.people = people;
       reservation.data.status = status;
-      console.log("submit reservation", reservation);
 
+      //Make api call to update reservation
       async function changeReservation(reservation) {
         const response = await updateReservation(reservation);
         console.log(response);
       }
       await changeReservation(reservation);
 
+      //Reset fields
       setFirstName("");
       setLastName("");
       setMobileNumber("");
@@ -107,6 +100,7 @@ function EditReservation({ date }) {
       setPeople("");
       setStatus("");
 
+      //Go back to dashboard page
       history.push(`/dashboard?date=${reservationDate}`);
     }
   }

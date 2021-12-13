@@ -2,7 +2,7 @@
 //The Error appears on the Seat Component
 //The sole prop is visibility2
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 function OccupiedError({ visibility2 }) {
   if (visibility2 !== null) {

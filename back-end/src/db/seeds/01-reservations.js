@@ -1,3 +1,5 @@
+//Seed the reservations table
+//Every time the seed file is run, delete the rows and  reset the autonumeric counter
 exports.seed = async function (knex) {
   await knex.raw("TRUNCATE TABLE reservations RESTART IDENTITY CASCADE");
 

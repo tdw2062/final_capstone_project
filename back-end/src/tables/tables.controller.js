@@ -6,10 +6,8 @@ const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 
 const tablesService = require("./tables.service.js");
 
-//Make sure that the reservation date is not in the past, is not a Tuesday, and is not before 10AM or after 9:30PM
+//This helper function is used to make sure the table information given in the request is valid
 async function validateBody(body, next) {
-  console.log("Request body received", body);
-
   if (
     !body ||
     !body.table_name ||
@@ -26,7 +24,6 @@ async function validateBody(body, next) {
     isNaN(body.capacity) ||
     typeof body.capacity === "string"
   ) {
-    console.log("Capacity was failed");
     next({
       status: 400,
       message: "The capacity did not pass validation.",
@@ -36,17 +33,16 @@ async function validateBody(body, next) {
 
 //Create a table based on the request body data
 async function createTable(req, res, next) {
-  console.log("request data", req.body);
+  //Validate information in request body
   validateBody(req.body.data, next);
   const data = await tablesService.createTable(req.body.data);
-  console.log("back-end data", data);
   res.status(201).json({ data });
 }
 
-//Helper function that determines if a given reservation exists (by reservationId)
+//Helper function that determines if a given table exists (by tableId)
 async function tableExists(req, res, next) {
   const table = await tablesService.read(req.params.tableId);
-  console.log("tableFound", table);
+  //If a table is found, save in locals, otherwise throw an error
   if (table) {
     res.locals.table = table;
     return next();
@@ -60,7 +56,7 @@ async function tableExists(req, res, next) {
 //List all of the tables
 async function list(req, res, next) {
   const data = await tablesService.list();
-  console.log("list of tables", data);
+
   res.json({ data });
 }
 
@@ -72,8 +68,6 @@ async function read(req, res, next) {
 //Update a table, first making sure that reservation_id is not null (the table is occupied)
 async function update(req, res, next) {
   const data = await tablesService.list();
-  console.log("tables fullList", data);
-  console.log("seatRequestData", req.body.data);
 
   //Make sure a reservation_id is present
   if (!req.body.data || !req.body.data.reservation_id) {
@@ -87,7 +81,6 @@ async function update(req, res, next) {
   const reservation = await tablesService.readReservation(
     req.body.data.reservation_id
   );
-  console.log("reservation before update", reservation);
 
   if (!reservation) {
     next({
@@ -98,7 +91,6 @@ async function update(req, res, next) {
 
   //Grab the table to run validateCapacity
   const table = await tablesService.read(req.params.tableId);
-  console.log("table before update", table);
 
   validateCapacity(
     reservation.people,
@@ -114,7 +106,7 @@ async function update(req, res, next) {
       message: `The reservation_id is already seated.`,
     });
   }
-
+  //Update reservation status as "seated"
   let objUpdate = { status: "seated" };
   await updateReservation(objUpdate, reservation.reservation_id);
 
@@ -127,16 +119,7 @@ async function update(req, res, next) {
 
 //Make sure that the table has sufficient capacity
 async function validateCapacity(people, capacity, reservation_id, next) {
-  console.log("fromTables");
   //Check that capacity is sufficient for the number of people
-  console.log(
-    "people",
-    people,
-    "capacity",
-    capacity,
-    "reservation_id",
-    reservation_id
-  );
   if (people > capacity || reservation_id !== null) {
     console.log("400 error");
     next({
@@ -147,14 +130,11 @@ async function validateCapacity(people, capacity, reservation_id, next) {
   }
 }
 
+//Update a table that is finished
 async function updateTableStatus(req, res, next) {
-  //This messes up the program
-  // const data = await tablesService.list();
-  //console.log("list of tables", data);
-
   const record = res.locals.table;
-  console.log("thisRecord", record);
-  console.log("requestBody", req.body.data);
+
+  //If the table is not occupied, throw an error
   if (record.reservation_id === null) {
     next({
       status: 400,
@@ -177,9 +157,8 @@ async function updateTableStatus(req, res, next) {
   res.json({ data: response });
 }
 
-//Modify the table but make sure there is valid capacity first
+//Update the reservation
 async function updateReservation(objUpdate, reservation_id) {
-  //Update the reservation
   await tablesService.updateReservation(objUpdate, reservation_id);
 }
 

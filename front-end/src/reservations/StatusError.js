@@ -2,7 +2,7 @@
 //The Error appears on the Dashboard Component next to the reservation
 //The sole prop is visibility
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 function StatusError({ visibility }) {
   if (visibility !== null) {

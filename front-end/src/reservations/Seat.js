@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import {
   listTables,
-  updateReservationWithTableId,
   updateTable,
   readReservation,
   readTable,
@@ -36,18 +35,14 @@ function Seat({ date }) {
   //The handleTableIdChange function is called whenever the value for the table drop-down is changed
   //This function sets the table_id, capacity, and occupied status of the table
   function handleTableIdChange(event) {
-    console.log("tableIdBefore", tableId);
     setTableId(event.target.value);
-    console.log("tableIdAfter", tableId);
 
     async function getTable(table_id) {
       const response = await readTable(table_id);
-      console.log("tableResponse", response);
       setCapacity(response.capacity);
       setOccupied(response.reservation_id);
-      console.log("tableCapacity", capacity);
     }
-    console.log("valueSelected", event.target.value);
+
     getTable(event.target.value);
   }
 
@@ -70,12 +65,9 @@ function Seat({ date }) {
     async function getReservation(reservationId) {
       const response = await readReservation(reservationId);
       setPeople(response.people);
-      console.log("peopleInside", people);
     }
     getReservation(reservationId);
   }
-
-  console.log("peopleInside2", people);
 
   //Create table rows from the tables state array and use to populate the drop-down
   const tableLinks = tables.map((table) => (
@@ -89,23 +81,20 @@ function Seat({ date }) {
   //changes the reservation_id on the table to match the party's reservation_id
   //so that the table is "occupied"
   async function handleSubmit(event) {
-    console.log("showMeTables", tables);
-    console.log("showMeTableId", tableId);
-    //console.log("showMeLinks", tableLinks);
     event.preventDefault();
     validate();
 
+    //Create a table object with a table_id and reservation_id
     let table = {
       data: {},
     };
 
     table.data.table_id = tableId;
     table.data.reservation_id = reservationId;
-    console.log("table", table);
 
+    //Update the table with the reservation_id
     async function changeTable(table) {
       const response = await updateTable(table);
-      console.log("updateTable response", response);
     }
     await changeTable(table);
 
@@ -119,14 +108,10 @@ function Seat({ date }) {
     setVisibility(null);
     setVisibility2(null);
 
-    console.log("logCapacity", capacity);
-    console.log("logPeople", people);
-
+    //Display an error message if table capacity is less than the size of the party
     if (capacity < people) {
       setVisibility(true);
     }
-
-    console.log("visibilityStatus", visibility);
 
     if (occupied !== null) {
       setVisibility2(true);

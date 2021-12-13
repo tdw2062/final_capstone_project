@@ -2,7 +2,7 @@
 //The button will appear next to a reservation on the Dashboard
 //The three props are visibility, handleCancel, and the reservationId
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 function CancelButton({ visibility, handleCancel, reservationId }) {
   const sendAlert = (event) => {

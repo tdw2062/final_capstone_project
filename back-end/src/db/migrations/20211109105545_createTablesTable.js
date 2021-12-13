@@ -1,3 +1,4 @@
+//Create the tables table
 exports.up = function (knex) {
   return knex.schema.createTable("tables", (table) => {
     table.increments("table_id").primary(); // sets table_id as the primary key

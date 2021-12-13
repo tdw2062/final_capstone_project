@@ -13,7 +13,7 @@ function read(table_id) {
   return knex("tables").select("*").where({ table_id }).first();
 }
 
-//List all reservations
+//List all tables
 function list() {
   return knex("tables").select("*").orderBy("table_name");
 }

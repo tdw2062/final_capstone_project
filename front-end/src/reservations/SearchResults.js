@@ -1,7 +1,7 @@
 //The SearchResults component is used to show the results from the search for reservations by phone number
 //It is used on the Search component
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 function SearchResults({ visibility, phoneNumber, reservations }) {
   //Create table rows of the reservations to display in the search results

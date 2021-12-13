@@ -18,16 +18,15 @@ async function list(req, res, next) {
   //Get reservations filtered by the paramater in the query string (usually 'date')
   const params = req.query;
   console.log("params", params);
+  //If the query string given is 'date', convert to 'reservation_date'
   if (params["date"]) {
     params.reservation_date = params.date;
     delete params["date"];
   }
   const response = await reservationsService.list(params);
-  console.log("entire list with params", response);
 
   //Only return reservations with a status of 'finished'
   const data = response.filter((obj) => obj.status !== "finished");
-
   res.json({ data });
 }
 
@@ -53,14 +52,10 @@ async function validateDate(date, time, next) {
   let hours = Number(time.substring(0, 2));
   let minutes = Number(time.substring(3, 5));
 
-  console.log("extractedHours", hours, "extractedMinutes", minutes);
-
   //Create a new reservation date based on the date being passed in from the request body (on the 'create' function)
   let resDate = new Date(year, month, day);
   resDate.setHours(hours);
   resDate.setMinutes(minutes);
-
-  console.log("Reservation Date/Time", resDate);
 
   //Create date for today to compare to resDate
   let today = new Date();
@@ -112,6 +107,7 @@ async function read(req, res, next) {
 
 //Create a new reservation (use valideDate to make sure time/date are valid)
 async function create(req, res, next) {
+  //Validate the information given in the request body
   validateBody(req.body.data, next);
   if (
     !req.body.data.reservation_date ||
@@ -145,6 +141,7 @@ async function create(req, res, next) {
   //Validate the time and date and then create a new reservation based on request body
   if (date && time) validateDate(date, time, next);
 
+  //Create the new reservation
   const data = await reservationsService.create(req.body.data);
   res.status(201).json({ data });
 }
@@ -152,8 +149,6 @@ async function create(req, res, next) {
 //Make sure that the reservation date is not in the past, is not a Tuesday, and is not before 10AM or after 9:30PM
 async function validateBody(body = {}, next) {
   //Convert people into a number
-
-  console.log("Request body received", body);
   if (!body || !body.first_name || body.first_name.trim() === "") {
     next({
       status: 400,
@@ -187,9 +182,12 @@ async function createTable(req, res, next) {
   res.status(201).json({ data });
 }
 
+//Update the reservation
 async function update(req, res, next) {
-  console.log("update attempt");
+  //Validate the information given in the request body
   validateBody(req.body.data, next);
+
+  //Make sure that a date and time are given
   if (
     !req.body.data.reservation_date ||
     req.body.data.reservation_date.trim() === ""
@@ -214,6 +212,7 @@ async function update(req, res, next) {
   //Validate the time and date and then create a new reservation based on request body
   if (date && time) validateDate(date, time, next);
 
+  //Update the reservation
   const response = await reservationsService.update(
     req.body.data,
     req.params.reservationId
@@ -221,9 +220,11 @@ async function update(req, res, next) {
   res.json({ data: response });
 }
 
+//Update the status of a reservation
 async function updateStatus(req, res, next) {
+  //Use the status from the reservationExists function
   let status = res.locals.reservation.status;
-  console.log("original status", status);
+
   if (
     req.body.data.status !== "booked" &&
     req.body.data.status !== "finished" &&
@@ -246,18 +247,7 @@ async function updateStatus(req, res, next) {
     req.body.data,
     req.params.reservationId
   );
-  console.log("This is the response", response);
-  res.json({ data: response });
-}
 
-//Modify the table but make sure there is valid capacity first
-async function updateWithValidation(req, res, next) {
-  //Update the reservation
-  const response = await reservationsService.update(
-    req.body.data,
-    req.params.reservationId
-  );
-  console.log("This is response", response);
   res.json({ data: response });
 }
 
@@ -272,9 +262,5 @@ module.exports = {
   updateStatus: [
     asyncErrorBoundary(reservationExists),
     asyncErrorBoundary(updateStatus),
-  ],
-  updateWithValidation: [
-    asyncErrorBoundary(reservationExists),
-    asyncErrorBoundary(updateWithValidation),
   ],
 };

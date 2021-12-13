@@ -21,12 +21,6 @@ router
   .post(controller.createTable)
   .all(methodNotAllowed);
 
-//Route to seat a specific table
-router
-  .route("/:reservationId/seat/:tableId")
-  .put(controller.updateWithValidation)
-  .all(methodNotAllowed);
-
 //Route to update the status of a table
 router
   .route("/:reservationId/status")

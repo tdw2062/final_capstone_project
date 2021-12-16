@@ -7,7 +7,7 @@ function SearchResults({ visibility, phoneNumber, reservations }) {
   //Create table rows of the reservations to display in the search results
   //Use the reservations state array to create the arrows.
   const reservationLinks = reservations.map((reservation) => (
-    <tr>
+    <tr key={reservation.reservation_id}>
       <td>{reservation.first_name}</td>
       <td>{reservation.last_name}</td>
       <td>{reservation.mobile_number}</td>

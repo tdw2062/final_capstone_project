@@ -155,7 +155,7 @@ function Dashboard({ date }) {
     let visible2 = reservation.status !== "cancelled" ? true : null;
 
     return (
-      <tr>
+      <tr key={reservation.reservation_id}>
         <td>{reservation.reservation_id}</td>
         <td>{reservation.first_name}</td>
         <td>{reservation.last_name}</td>
@@ -193,7 +193,7 @@ function Dashboard({ date }) {
     let visible = table.reservation_id ? true : null;
 
     return (
-      <tr>
+      <tr key={table.table_id}>
         <td>{table.table_id}</td>
         <td>{table.table_name}</td>
         <td>{table.capacity}</td>

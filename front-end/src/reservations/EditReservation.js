@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { readReservation, updateReservation } from "../utils/api";
-import StatusError from "./StatusError";
+import ResForm from "./ResForm";
 import ErrorAlert from "../layout/ErrorAlert";
 
 /**
@@ -33,11 +33,6 @@ function EditReservation({ date }) {
   const [people, setPeople] = useState("");
   const handlePeopleChange = (event) => setPeople(Number(event.target.value));
 
-  const [status, setStatus] = useState("");
-  const handleStatusChange = (event) => setStatus(event.target.value);
-
-  const [visibility, setVisibility] = useState(null);
-
   //Get ReservationId from url
   const { reservationId } = useParams();
 
@@ -57,7 +52,6 @@ function EditReservation({ date }) {
       setReservationDate(dateString);
       setReservationTime(response.reservation_time);
       setPeople(response.people);
-      setStatus(response.status);
     }
     getReservation(reservationId);
   }, [reservationId]);
@@ -67,42 +61,35 @@ function EditReservation({ date }) {
   async function handleSubmit(event) {
     event.preventDefault();
 
-    //If status is not equal to booked throw error otherwise edit reservation
-    if (status !== "booked") {
-      setVisibility(true);
-    } else {
-      let reservation = {
-        data: {},
-      };
+    let reservation = {
+      data: {},
+    };
 
-      reservation.data.reservation_id = reservationId;
-      reservation.data.first_name = firstName;
-      reservation.data.last_name = lastName;
-      reservation.data.mobile_number = mobileNumber;
-      reservation.data.reservation_date = reservationDate;
-      reservation.data.reservation_time = reservationTime;
-      reservation.data.people = people;
-      reservation.data.status = status;
+    reservation.data.reservation_id = reservationId;
+    reservation.data.first_name = firstName;
+    reservation.data.last_name = lastName;
+    reservation.data.mobile_number = mobileNumber;
+    reservation.data.reservation_date = reservationDate;
+    reservation.data.reservation_time = reservationTime;
+    reservation.data.people = people;
 
-      //Make api call to update reservation
-      async function changeReservation(reservation) {
-        const response = await updateReservation(reservation);
-        console.log(response);
-      }
-      await changeReservation(reservation);
-
-      //Reset fields
-      setFirstName("");
-      setLastName("");
-      setMobileNumber("");
-      setReservationDate("");
-      setReservationTime("");
-      setPeople("");
-      setStatus("");
-
-      //Go back to dashboard page
-      history.push(`/dashboard?date=${reservationDate}`);
+    //Make api call to update reservation
+    async function changeReservation(reservation) {
+      const response = await updateReservation(reservation);
+      console.log(response);
     }
+    await changeReservation(reservation);
+
+    //Reset fields
+    setFirstName("");
+    setLastName("");
+    setMobileNumber("");
+    setReservationDate("");
+    setReservationTime("");
+    setPeople("");
+
+    //Go back to dashboard page
+    history.push(`/dashboard?date=${reservationDate}`);
   }
 
   //Create the handleCancel function to return the user to the previous page
@@ -114,97 +101,22 @@ function EditReservation({ date }) {
   return (
     <main>
       <h1>Edit Reservation</h1>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="first_name">First Name</label>
-          <input
-            type="text"
-            name="first_name"
-            className="form-control"
-            id="first_name"
-            aria-describedby="emailHelp"
-            onChange={handleFirstNameChange}
-            value={firstName}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="last_name">Last Name</label>
-          <input
-            type="text"
-            name="last_name"
-            className="form-control"
-            id="last_name"
-            onChange={handleLastNameChange}
-            value={lastName}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="mobile_number">Mobile Number</label>
-          <input
-            type="text"
-            name="mobile_number"
-            className="form-control"
-            id="mobile_number"
-            onChange={handleMobileNumberChange}
-            value={mobileNumber}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="reservation_date">Date of Reservation</label>
-          <input
-            type="date"
-            name="reservation_date"
-            className="form-control"
-            id="reservation_date"
-            onChange={handleReservationDateChange}
-            value={reservationDate}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="reservation_time">Time of Reservation</label>
-          <input
-            type="time"
-            name="reservation_time"
-            className="form-control"
-            id="reservation_time"
-            onChange={handleReservationTimeChange}
-            value={reservationTime}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="people">People</label>
-          <input
-            type="number"
-            name="people"
-            className="form-control"
-            id="people"
-            onChange={handlePeopleChange}
-            value={people}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="status">Status</label>
-          <input
-            type="text"
-            name="status"
-            className="form-control"
-            id="status"
-            onChange={handleStatusChange}
-            value={status}
-          />
-        </div>
-        <button type="submit" className="btn btn-primary">
-          Submit
-        </button>
-        <button
-          type="cancel"
-          className="btn btn-primary"
-          onClick={handleCancel}
-        >
-          Cancel
-        </button>
-      </form>
-      <StatusError visibility={visibility} />
+      <ResForm
+        firstName={firstName}
+        handleFirstNameChange={handleFirstNameChange}
+        lastName={lastName}
+        handleLastNameChange={handleLastNameChange}
+        mobileNumber={mobileNumber}
+        handleMobileNumberChange={handleMobileNumberChange}
+        reservationDate={reservationDate}
+        handleReservationDateChange={handleReservationDateChange}
+        reservationTime={reservationTime}
+        handleReservationTimeChange={handleReservationTimeChange}
+        people={people}
+        handlePeopleChange={handlePeopleChange}
+        handleSubmit={handleSubmit}
+        handleCancel={handleCancel}
+      />
     </main>
   );
 }

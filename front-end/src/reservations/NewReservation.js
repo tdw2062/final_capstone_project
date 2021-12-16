@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { createReservation } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
+import ResForm from "./ResForm";
 import PastDateError from "./PastDateError";
 import TuesdayError from "./TuesdayError";
 import TimeError from "./TimeError";
@@ -141,85 +142,22 @@ function NewReservation({ date }) {
   return (
     <main>
       <h1>Add a New Reservation</h1>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="first_name">First Name</label>
-          <input
-            type="text"
-            name="first_name"
-            className="form-control"
-            id="first_name"
-            aria-describedby="emailHelp"
-            onChange={handleFirstNameChange}
-            value={firstName}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="last_name">Last Name</label>
-          <input
-            type="text"
-            name="last_name"
-            className="form-control"
-            id="last_name"
-            onChange={handleLastNameChange}
-            value={lastName}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="mobile_number">Mobile Number</label>
-          <input
-            type="text"
-            name="mobile_number"
-            className="form-control"
-            id="mobile_number"
-            onChange={handleMobileNumberChange}
-            value={mobileNumber}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="reservation_date">Date of Reservation</label>
-          <input
-            type="date"
-            name="reservation_date"
-            className="form-control"
-            id="reservation_date"
-            onChange={handleReservationDateChange}
-            value={reservationDate}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="reservation_time">Time of Reservation</label>
-          <input
-            type="time"
-            name="reservation_time"
-            className="form-control"
-            id="reservation_time"
-            onChange={handleReservationTimeChange}
-            value={reservationTime}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="people">People</label>
-          <input
-            type="number"
-            name="people"
-            className="form-control"
-            id="people"
-            onChange={handlePeopleChange}
-            value={people}
-          />
-        </div>
-        <button type="submit" className="btn btn-primary">
-          Submit
-        </button>
-        <button
-          type="cancel"
-          className="btn btn-primary"
-          onClick={handleCancel}
-        >
-          Cancel
-        </button>
-      </form>
+      <ResForm
+        firstName={firstName}
+        handleFirstNameChange={handleFirstNameChange}
+        lastName={lastName}
+        handleLastNameChange={handleLastNameChange}
+        mobileNumber={mobileNumber}
+        handleMobileNumberChange={handleMobileNumberChange}
+        reservationDate={reservationDate}
+        handleReservationDateChange={handleReservationDateChange}
+        reservationTime={reservationTime}
+        handleReservationTimeChange={handleReservationTimeChange}
+        people={people}
+        handlePeopleChange={handlePeopleChange}
+        handleSubmit={handleSubmit}
+        handleCancel={handleCancel}
+      />
       <PastDateError visibility={visibility} />
       <TuesdayError visibility2={visibility2} />
       <TimeError visibility3={visibility3} />

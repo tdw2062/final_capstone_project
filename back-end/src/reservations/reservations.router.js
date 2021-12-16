@@ -14,7 +14,7 @@ router
   .put(controller.update)
   .all(methodNotAllowed);
 
-//Route to seat a reservation
+//Route to seat one reservation
 router
   .route("/:reservationId/seat")
   .get(controller.listTables)

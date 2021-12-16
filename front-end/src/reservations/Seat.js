@@ -1,4 +1,4 @@
-//The Seat Component is used to assign a reservation to a table
+//The Seat Component is used to assign a reservation to a given table
 
 import React, { useEffect, useState } from "react";
 import {

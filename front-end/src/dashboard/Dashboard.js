@@ -113,15 +113,23 @@ function Dashboard({ date }) {
 
     //Make an api call to update the reservation's status
     async function changeReservation(reservation) {
-      const response = await updateReservationStatus(reservation);
+      try {
+        const response = await updateReservationStatus(reservation);
+      } catch (err) {
+        console.log("Error making updateReservationStatus API call: ", err);
+      }
     }
 
     if (reservationId !== null) changeReservation(reservation);
 
     //Make an api call to update the table's status
     async function changeTable(table) {
-      const response = await updateTableStatus(table);
-      console.log(response);
+      try {
+        const response = await updateTableStatus(table);
+        console.log(response);
+      } catch (err) {
+        console.log("Error making updateTableStatus API call: ", err);
+      }
     }
     await changeTable(table);
 
@@ -143,7 +151,11 @@ function Dashboard({ date }) {
 
     //Make an api call to update the status of the reservation
     async function changeReservation(reservation) {
-      const response = await updateReservationStatus(reservation);
+      try {
+        const response = await updateReservationStatus(reservation);
+      } catch (err) {
+        console.log("Error making updateReservationStatus API call: ", err);
+      }
     }
     await changeReservation(reservation);
     loadDashboard();

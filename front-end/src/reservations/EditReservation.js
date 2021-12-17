@@ -75,8 +75,12 @@ function EditReservation({ date }) {
 
     //Make api call to update reservation
     async function changeReservation(reservation) {
-      const response = await updateReservation(reservation);
-      console.log(response);
+      try {
+        const response = await updateReservation(reservation);
+        console.log(response);
+      } catch (err) {
+        console.log("Error making updateReservation API call: ", err);
+      }
     }
     await changeReservation(reservation);
 

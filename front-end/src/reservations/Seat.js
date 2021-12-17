@@ -38,9 +38,13 @@ function Seat({ date }) {
     setTableId(event.target.value);
 
     async function getTable(table_id) {
-      const response = await readTable(table_id);
-      setCapacity(response.capacity);
-      setOccupied(response.reservation_id);
+      try {
+        const response = await readTable(table_id);
+        setCapacity(response.capacity);
+        setOccupied(response.reservation_id);
+      } catch (err) {
+        console.log("Error making readTable API call:", err);
+      }
     }
 
     getTable(event.target.value);
@@ -63,8 +67,12 @@ function Seat({ date }) {
   function loadPeople() {
     //Make call to get the reservation and check the number of people in the reservation
     async function getReservation(reservationId) {
-      const response = await readReservation(reservationId);
-      setPeople(response.people);
+      try {
+        const response = await readReservation(reservationId);
+        setPeople(response.people);
+      } catch (err) {
+        console.log("Error Making readReservation API Call");
+      }
     }
     getReservation(reservationId);
   }
@@ -94,11 +102,15 @@ function Seat({ date }) {
 
     //Update the table with the reservation_id
     async function changeTable(table) {
-      const response = await updateTable(table);
+      try {
+        const response = await updateTable(table);
+        history.push("/dashboard");
+      } catch (err) {
+        console.log("The API Call for updateTable had an error:", err);
+        //Include third visibility to show error outside of first two errors
+      }
     }
     await changeTable(table);
-
-    history.push("/dashboard");
   }
 
   //The validate function is used by the handleSubmit function to make sure

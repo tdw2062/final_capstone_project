@@ -70,7 +70,11 @@ function NewReservation({ date }) {
 
     //Make api call to create a new reservation
     async function newReservation(reservation) {
-      const response = await createReservation(reservation);
+      try {
+        const response = await createReservation(reservation);
+      } catch (err) {
+        console.log("Error making createReservation API call", err);
+      }
     }
     newReservation(reservation);
 

@@ -36,8 +36,12 @@ function AddTable({ date }) {
 
     //Make an api call to post the new table to the db
     async function newTable(table) {
-      const response = await createTable(table);
-      if (response) history.push("/dashboard");
+      try {
+        const response = await createTable(table);
+        if (response) history.push("/dashboard");
+      } catch (err) {
+        console.log("Error making createTable API call: ", err);
+      }
     }
 
     newTable(table);

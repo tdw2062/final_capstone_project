@@ -13,6 +13,7 @@ import { listTables } from "../utils/api";
 import SeatButton from "./SeatButton";
 import FinishButton from "./FinishButton";
 import CancelButton from "./CancelButton";
+import ErrorCaught from "../reservations/ErrorCaught";
 import ErrorAlert from "../layout/ErrorAlert";
 
 /**
@@ -27,6 +28,8 @@ function Dashboard({ date }) {
   const [reservationsError, setReservationsError] = useState(null);
   const [tables, setTables] = useState([]);
   const [tablesError, setTablesError] = useState(null);
+  const [visibility3, setVisibility3] = useState(null);
+  const [errMessage, setErrMessage] = useState("");
   //Declare an instance of the useHistory hook
   const history = useHistory();
 
@@ -94,6 +97,8 @@ function Dashboard({ date }) {
   //Create the handleFinish function to finish a table
   //This function changes the status of a reservation to 'finished' and the status of table to 'free'
   async function handleFinish(reservationId, tableId) {
+    setVisibility3(null);
+
     //Create a reservation object with a reservation_id and set the status to 'finished'
     console.log("reservationId", reservationId);
     let reservation = {
@@ -117,6 +122,8 @@ function Dashboard({ date }) {
         const response = await updateReservationStatus(reservation);
       } catch (err) {
         console.log("Error making updateReservationStatus API call: ", err);
+        setErrMessage(err);
+        setVisibility3(true);
       }
     }
 
@@ -129,6 +136,8 @@ function Dashboard({ date }) {
         console.log(response);
       } catch (err) {
         console.log("Error making updateTableStatus API call: ", err);
+        setErrMessage(err);
+        setVisibility3(true);
       }
     }
     await changeTable(table);
@@ -141,6 +150,8 @@ function Dashboard({ date }) {
   //Create a handleCancel function to cancel a reservation
   //This function sets a reservation's status to cancelled
   async function handleCancel(reservationId) {
+    setVisibility3(null);
+
     //Create a reservation object with a reservation_id and set the status to cancelled
     let reservation = {
       data: {},
@@ -155,6 +166,8 @@ function Dashboard({ date }) {
         const response = await updateReservationStatus(reservation);
       } catch (err) {
         console.log("Error making updateReservationStatus API call: ", err);
+        setErrMessage(err);
+        setVisibility3(true);
       }
     }
     await changeReservation(reservation);
@@ -276,6 +289,7 @@ function Dashboard({ date }) {
         </tr>
         {tableLinks}
       </table>
+      <ErrorCaught visibility3={visibility3} msg={errMessage} />
     </main>
   );
 }

@@ -11,6 +11,7 @@ import { useParams, useHistory } from "react-router-dom";
 import ErrorAlert from "../layout/ErrorAlert";
 import CapacityError from "./CapacityError";
 import OccupiedError from "./OccupiedError";
+import ErrorCaught from "./ErrorCaught";
 
 /**
  * Defines the dashboard page.
@@ -25,6 +26,8 @@ function Seat({ date }) {
   const [tableId, setTableId] = useState("");
   const [visibility, setVisibility] = useState(null);
   const [visibility2, setVisibility2] = useState(null);
+  const [visibility3, setVisibility3] = useState(null);
+  const [errMessage, setErrMessage] = useState("");
   const [capacity, setCapacity] = useState(null);
   const [people, setPeople] = useState(null);
   const [occupied, setOccupied] = useState(null);
@@ -36,6 +39,7 @@ function Seat({ date }) {
   //This function sets the table_id, capacity, and occupied status of the table
   function handleTableIdChange(event) {
     setTableId(event.target.value);
+    setVisibility3(null);
 
     async function getTable(table_id) {
       try {
@@ -44,6 +48,8 @@ function Seat({ date }) {
         setOccupied(response.reservation_id);
       } catch (err) {
         console.log("Error making readTable API call:", err);
+        setErrMessage(err);
+        setVisibility3(true);
       }
     }
 
@@ -59,6 +65,10 @@ function Seat({ date }) {
   function loadTables() {
     const abortController = new AbortController();
     setTablesError(null);
+
+    //Reset ErrorCaught visibility
+    setVisibility3(null);
+
     listTables(abortController.signal).then(setTables).catch(setTablesError);
     loadPeople();
     return () => abortController.abort();
@@ -71,7 +81,9 @@ function Seat({ date }) {
         const response = await readReservation(reservationId);
         setPeople(response.people);
       } catch (err) {
-        console.log("Error Making readReservation API Call");
+        console.log("Error Making readReservation API Call", err);
+        setErrMessage(err);
+        setVisibility3(true);
       }
     }
     getReservation(reservationId);
@@ -107,7 +119,8 @@ function Seat({ date }) {
         history.push("/dashboard");
       } catch (err) {
         console.log("The API Call for updateTable had an error:", err);
-        //Include third visibility to show error outside of first two errors
+        setErrMessage(err);
+        setVisibility3(true);
       }
     }
     await changeTable(table);
@@ -119,6 +132,7 @@ function Seat({ date }) {
     //Reset visibility
     setVisibility(null);
     setVisibility2(null);
+    setVisibility3(null);
 
     //Display an error message if table capacity is less than the size of the party
     if (capacity < people) {
@@ -167,6 +181,7 @@ function Seat({ date }) {
       </form>
       <CapacityError visibility={visibility} />
       <OccupiedError visibility2={visibility2} />
+      <ErrorCaught visibility3={visibility3} msg={errMessage} />
     </main>
   );
 }

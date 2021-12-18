@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { createTable } from "../utils/api";
 import { useHistory } from "react-router-dom";
+import ErrorCaught from "./ErrorCaught";
 import ErrorAlert from "../layout/ErrorAlert";
 
 /**
@@ -17,6 +18,10 @@ function AddTable({ date }) {
   const [capacity, setCapacity] = useState("");
   const handleCapacityChange = (event) => setCapacity(event.target.value);
 
+  //State vars for ErrorCaught
+  const [visibility3, setVisibility3] = useState(null);
+  const [errMessage, setErrMessage] = useState("");
+
   //Create instance of useHistory hook
   const history = useHistory();
 
@@ -24,6 +29,8 @@ function AddTable({ date }) {
   const handleSubmit = (event) => {
     console.log("helloThereGuy");
     event.preventDefault();
+
+    setVisibility3(null);
 
     //Create a table object and set its name and capacity according to the
     //input fields
@@ -41,6 +48,8 @@ function AddTable({ date }) {
         if (response) history.push("/dashboard");
       } catch (err) {
         console.log("Error making createTable API call: ", err);
+        setErrMessage(err);
+        setVisibility3(true);
       }
     }
 
@@ -91,6 +100,7 @@ function AddTable({ date }) {
           Cancel
         </button>
       </form>
+      <ErrorCaught visibility3={visibility3} msg={errMessage} />
     </main>
   );
 }

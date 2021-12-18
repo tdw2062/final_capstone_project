@@ -6,6 +6,7 @@ import ResForm from "./ResForm";
 import PastDateError from "./PastDateError";
 import TuesdayError from "./TuesdayError";
 import TimeError from "./TimeError";
+import ErrorCaught from "./ErrorCaught";
 
 /**
  * Defines the dashboard page.
@@ -41,6 +42,9 @@ function NewReservation({ date }) {
   const [visibility2, setVisibility2] = useState(null);
   const [visibility3, setVisibility3] = useState(null);
 
+  const [visibilityError, setVisibilityError] = useState(null);
+  const [errMessage, setErrMessage] = useState("");
+
   //Create instance of useHistory hook
   const history = useHistory();
 
@@ -52,34 +56,36 @@ function NewReservation({ date }) {
   const handleSubmit = (event) => {
     switched = null;
 
+    event.preventDefault();
+
     //Validate the input
     validate();
 
-    event.preventDefault();
-    let reservation = {
-      data: {},
-    };
-
-    //Set state variables
-    reservation.data.first_name = firstName;
-    reservation.data.last_name = lastName;
-    reservation.data.mobile_number = mobileNumber;
-    reservation.data.reservation_date = reservationDate;
-    reservation.data.reservation_time = reservationTime;
-    reservation.data.people = people;
-
-    //Make api call to create a new reservation
-    async function newReservation(reservation) {
-      try {
-        const response = await createReservation(reservation);
-      } catch (err) {
-        console.log("Error making createReservation API call", err);
-      }
-    }
-    newReservation(reservation);
-
-    //If the api call was successful, go back to the dashboard
     if (!switched) {
+      let reservation = {
+        data: {},
+      };
+
+      //Set state variables
+      reservation.data.first_name = firstName;
+      reservation.data.last_name = lastName;
+      reservation.data.mobile_number = mobileNumber;
+      reservation.data.reservation_date = reservationDate;
+      reservation.data.reservation_time = reservationTime;
+      reservation.data.people = people;
+
+      //Make api call to create a new reservation
+      async function newReservation(reservation) {
+        try {
+          const response = await createReservation(reservation);
+        } catch (err) {
+          console.log("Error making createReservation API call", err);
+          setErrMessage(err);
+          setVisibilityError(true);
+        }
+      }
+      newReservation(reservation);
+
       history.push(`/dashboard?date=${reservationDate}`);
     }
   };
@@ -91,6 +97,7 @@ function NewReservation({ date }) {
     setVisibility(null);
     setVisibility2(null);
     setVisibility3(null);
+    setVisibilityError(null);
 
     //Create date for reservation date
     let month = Number(reservationDate.substring(5, 7)) - 1;
@@ -165,6 +172,7 @@ function NewReservation({ date }) {
       <PastDateError visibility={visibility} />
       <TuesdayError visibility2={visibility2} />
       <TimeError visibility3={visibility3} />
+      <ErrorCaught visibility3={visibilityError} msg={errMessage} />
     </main>
   );
 }

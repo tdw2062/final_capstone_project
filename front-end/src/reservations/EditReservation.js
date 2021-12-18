@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { readReservation, updateReservation } from "../utils/api";
 import ResForm from "./ResForm";
+import ErrorCaught from "./ErrorCaught";
 import ErrorAlert from "../layout/ErrorAlert";
 
 /**
@@ -33,6 +34,10 @@ function EditReservation({ date }) {
   const [people, setPeople] = useState("");
   const handlePeopleChange = (event) => setPeople(Number(event.target.value));
 
+  //State vars for error message
+  const [visibility3, setVisibility3] = useState(null);
+  const [errMessage, setErrMessage] = useState("");
+
   //Get ReservationId from url
   const { reservationId } = useParams();
 
@@ -61,6 +66,8 @@ function EditReservation({ date }) {
   async function handleSubmit(event) {
     event.preventDefault();
 
+    setVisibility3(null);
+
     let reservation = {
       data: {},
     };
@@ -80,6 +87,8 @@ function EditReservation({ date }) {
         console.log(response);
       } catch (err) {
         console.log("Error making updateReservation API call: ", err);
+        setErrMessage(err);
+        setVisibility3(true);
       }
     }
     await changeReservation(reservation);
@@ -121,6 +130,7 @@ function EditReservation({ date }) {
         handleSubmit={handleSubmit}
         handleCancel={handleCancel}
       />
+      <ErrorCaught visibility3={visibility3} msg={errMessage} />
     </main>
   );
 }
